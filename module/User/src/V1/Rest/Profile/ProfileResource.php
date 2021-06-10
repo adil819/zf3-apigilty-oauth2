@@ -68,15 +68,18 @@ class ProfileResource extends AbstractResourceListener
         return $userProfile;
     }
 
-    /**
+    /** 
      * Fetch all or a subset of resources
      *
      * @param  array $params
      * @return ApiProblem|mixed
      */
-    public function fetchAll($params = [])
+    public function fetchAll()  //($params = [])
     {
-        return new ApiProblem(405, 'The GET method has not been defined for collections');
+        #BUATAN SENDIRI
+        $userProfiles = $this->getUserProfileMapper()->fetchAll();
+
+        return new ApiProblem(422, 'lalala yyeyyey dmdcmsbvsmbcnsvbncbd e');
     }
 
     /**

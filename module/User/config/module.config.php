@@ -14,23 +14,23 @@ return [
         'factories' => [
             'user.resetpassword' => \User\V1\Service\ResetPasswordFactory::class,
             'user.activation' => \User\V1\Service\UserActivationFactory::class,
-            'user.signup'  => \User\V1\Service\SignupFactory::class,
+            'user.signup' => \User\V1\Service\SignupFactory::class,
             'user.profile' => \User\V1\Service\ProfileFactory::class,
-            'user.activation.listener'    => \User\V1\Service\Listener\UserActivationEventListenerFactory::class,
+            'user.activation.listener' => \User\V1\Service\Listener\UserActivationEventListenerFactory::class,
             'user.resetpassword.listener' => \User\V1\Service\Listener\ResetPasswordEventListenerFactory::class,
-            'user.signup.listener'  => \User\V1\Service\Listener\SignupEventListenerFactory::class,
+            'user.signup.listener' => \User\V1\Service\Listener\SignupEventListenerFactory::class,
             'user.profile.listener' => \User\V1\Service\Listener\ProfileEventListenerFactory::class,
             'user.notification.email.signup.listener' => \User\V1\Notification\Email\Listener\SignupEventListenerFactory::class,
-            'user.notification.email.activation.listener'    => \User\V1\Notification\Email\Listener\ActivationEventListenerFactory::class,
+            'user.notification.email.activation.listener' => \User\V1\Notification\Email\Listener\ActivationEventListenerFactory::class,
             'user.notification.email.resetpassword.listener' => \User\V1\Notification\Email\Listener\ResetPasswordEventListenerFactory::class,
-            'user.notification.email.service.resetpassword'  => \User\V1\Notification\Email\Service\ResetPasswordFactory::class,
-            'user.notification.email.service.welcome'     => \User\V1\Notification\Email\Service\WelcomeFactory::class,
-            'user.notification.email.service.activation'  => \User\V1\Notification\Email\Service\ActivationFactory::class,
+            'user.notification.email.service.resetpassword' => \User\V1\Notification\Email\Service\ResetPasswordFactory::class,
+            'user.notification.email.service.welcome' => \User\V1\Notification\Email\Service\WelcomeFactory::class,
+            'user.notification.email.service.activation' => \User\V1\Notification\Email\Service\ActivationFactory::class,
             'user.auth.pdo.adapter' => \User\OAuth2\Factory\PdoAdapterFactory::class,
             'user.auth.activeuser.listener' => \User\Service\Listener\AuthActiveUserListenerFactory::class,
-            'user.hydrator.photo.strategy'  => \User\V1\Hydrator\Strategy\PhotoStrategyFactory::class,
+            'user.hydrator.photo.strategy' => \User\V1\Hydrator\Strategy\PhotoStrategyFactory::class,
             'user.auth.unauthorized.listener' => \User\Service\Listener\UnauthorizedUserListenerFactory::class,
-            \User\V1\Rest\Profile\ProfileResource::class => \User\V1\Rest\Profile\ProfileResourceFactory::class
+            \User\V1\Rest\Profile\ProfileResource::class => \User\V1\Rest\Profile\ProfileResourceFactory::class,
         ],
         'abstract_factories' => [
             0 => \User\Mapper\AbstractMapperFactory::class,
@@ -61,7 +61,7 @@ return [
             'user.rest.profile' => [
                 'type' => 'Segment',
                 'options' => [
-                    'route' => '/api/profile[/:profile_id]',
+                    'route' => '/api/profile[/:uuid]',
                     'defaults' => [
                         'controller' => 'User\\V1\\Rest\\Profile\\Controller',
                     ],
@@ -569,7 +569,7 @@ return [
         'User\\V1\\Rest\\Profile\\Controller' => [
             'listener' => \User\V1\Rest\Profile\ProfileResource::class,
             'route_name' => 'user.rest.profile',
-            'route_identifier_name' => 'profile_id',
+            'route_identifier_name' => 'uuid',
             'collection_name' => 'profile',
             'entity_http_methods' => [
                 0 => 'GET',
@@ -582,7 +582,7 @@ return [
             ],
             'collection_query_whitelist' => [],
             'page_size' => 25,
-            'page_size_param' => null,
+            'page_size_param' => 'limit',
             'entity_class' => \User\Entity\UserProfile::class,
             'collection_class' => \User\V1\Rest\Profile\ProfileCollection::class,
             'service_name' => 'Profile',
@@ -593,13 +593,13 @@ return [
             \User\Entity\UserProfile::class => [
                 'entity_identifier_name' => 'uuid',
                 'route_name' => 'user.rest.profile',
-                'route_identifier_name' => 'profile_id',
+                'route_identifier_name' => 'uuid',
                 'hydrator' => 'User\\Hydrator\\UserProfile',
             ],
             \User\V1\Rest\Profile\ProfileCollection::class => [
                 'entity_identifier_name' => 'uuid',
                 'route_name' => 'user.rest.profile',
-                'route_identifier_name' => 'profile_id',
+                'route_identifier_name' => 'uuid',
                 'is_collection' => true,
             ],
         ],
@@ -609,7 +609,7 @@ return [
             'User\\V1\\Rest\\Profile\\Controller' => [
                 'collection' => [
                     'GET' => true,
-                    'POST' => false,
+                    'POST' => true,
                     'PUT' => false,
                     'PATCH' => false,
                     'DELETE' => false,
