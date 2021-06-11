@@ -56,6 +56,8 @@ abstract class AbstractMapper implements MapperInterface
      */
     public function fetchAll(array $params)
     {
+        // BARU AJA DITAMBAHIN
+        return $this->getEntityRepository()->findAll($params);
     }
 
     /**

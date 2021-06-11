@@ -12,27 +12,37 @@ use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrinePaginatorAd
  *
  * UserProfile Mapper
  */
-class UserProfile extends AbstractMapper implements MapperInterface
+class Room extends AbstractMapper implements MapperInterface
 {
     /**
      * Get Entity Repository
      */
     public function getEntityRepository()
     {
-        return $this->getEntityManager()->getRepository('User\\Entity\\UserProfile');
+        return $this->getEntityManager()->getRepository('User\\Entity\\Room');
     }
 
     // INI FUNGSI fetchAll dari Bang Hakim untuk di mapper
+    
     public function fetchAll(array $params = [], $order = null, $asc = false)
     {
-        $qb = $this->getEntityRepository()->createQueryBuilder('dev');
+        $qb = $this->getEntityRepository()->createQueryBuilder('r');
         $cacheKey = '';
 
-        // if (isset($params['account'])) {
-        //     $qb->andWhere('dev.account = :account')
-        //        ->setParameter('account', $params['account']);
-        //     $cacheKey .= '_' . $params['account'];
+        // if (isset($params['capacity'])) {
+        //     $params['capacity'] = (int)$params['capacity'];
+        //     $qb->andWhere('r.capacity > :capacity')
+        //        ->setParameter('capacity', $params['capacity']);
+        //     $cacheKey .= '_' . $params['capacity'];
         // }
+
+        // di Apigility => Collection Query String Whitelist => tambah kolom nya
+        if (isset($params['name'])) {
+            // $params['name'] = (int)$params['name'];
+            $qb->andWhere('r.name = :name')
+               ->setParameter('name', $params['name']);
+            $cacheKey .= '_' . $params['name'];
+        }
 
         $query = $qb->getQuery();
         $query->useQueryCache(true);
@@ -41,12 +51,5 @@ class UserProfile extends AbstractMapper implements MapperInterface
         // return $result;
         return $query;
     }
-
-    public function create($data){
-
-    }
-
-
-
 
 }

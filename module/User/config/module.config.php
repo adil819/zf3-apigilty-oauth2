@@ -16,10 +16,12 @@ return [
             'user.activation' => \User\V1\Service\UserActivationFactory::class,
             'user.signup' => \User\V1\Service\SignupFactory::class,
             'user.profile' => \User\V1\Service\ProfileFactory::class,
+            'room' => \User\V1\Service\RoomFactory::class,
             'user.activation.listener' => \User\V1\Service\Listener\UserActivationEventListenerFactory::class,
             'user.resetpassword.listener' => \User\V1\Service\Listener\ResetPasswordEventListenerFactory::class,
             'user.signup.listener' => \User\V1\Service\Listener\SignupEventListenerFactory::class,
             'user.profile.listener' => \User\V1\Service\Listener\ProfileEventListenerFactory::class,
+            'room.listener' => \User\V1\Service\Listener\RoomEventListenerFactory::class,
             'user.notification.email.signup.listener' => \User\V1\Notification\Email\Listener\SignupEventListenerFactory::class,
             'user.notification.email.activation.listener' => \User\V1\Notification\Email\Listener\ActivationEventListenerFactory::class,
             'user.notification.email.resetpassword.listener' => \User\V1\Notification\Email\Listener\ResetPasswordEventListenerFactory::class,
@@ -31,6 +33,7 @@ return [
             'user.hydrator.photo.strategy' => \User\V1\Hydrator\Strategy\PhotoStrategyFactory::class,
             'user.auth.unauthorized.listener' => \User\Service\Listener\UnauthorizedUserListenerFactory::class,
             \User\V1\Rest\Profile\ProfileResource::class => \User\V1\Rest\Profile\ProfileResourceFactory::class,
+            \User\V1\Rest\Room\RoomResource::class => \User\V1\Rest\Room\RoomResourceFactory::class,
         ],
         'abstract_factories' => [
             0 => \User\Mapper\AbstractMapperFactory::class,
@@ -39,6 +42,7 @@ return [
     'hydrators' => [
         'factories' => [
             'User\\Hydrator\\UserProfile' => \User\V1\Hydrator\UserProfileHydratorFactory::class,
+            'User\\Hydrator\\Room' => \User\V1\Hydrator\RoomHydratorFactory::class,
         ],
     ],
     'view_manager' => [
@@ -107,6 +111,15 @@ return [
                     ],
                 ],
             ],
+            'user.rest.room' => [
+                'type' => 'Segment',
+                'options' => [
+                    'route' => '/api/room[/:uuid]',
+                    'defaults' => [
+                        'controller' => 'User\\V1\\Rest\\Room\\Controller',
+                    ],
+                ],
+            ],
         ],
     ],
     'zf-versioning' => [
@@ -118,6 +131,7 @@ return [
             4 => 'user.rpc.user-activation',
             5 => 'user.rpc.reset-password-confirm-email',
             6 => 'user.rpc.reset-password-new-password',
+            7 => 'user.rest.room',
         ],
     ],
     'zf-rpc' => [
@@ -165,6 +179,7 @@ return [
             'User\\V1\\Rpc\\UserActivation\\Controller' => 'Json',
             'User\\V1\\Rpc\\ResetPasswordConfirmEmail\\Controller' => 'Json',
             'User\\V1\\Rpc\\ResetPasswordNewPassword\\Controller' => 'Json',
+            'User\\V1\\Rest\\Room\\Controller' => 'HalJson',
         ],
         'accept_whitelist' => [
             'User\\V1\\Rpc\\Signup\\Controller' => [
@@ -193,6 +208,11 @@ return [
                 0 => 'application/json',
                 1 => 'application/vnd.aqilix.bootstrap.v1+json',
             ],
+            'User\\V1\\Rest\\Room\\Controller' => [
+                0 => 'application/vnd.user.v1+json',
+                1 => 'application/hal+json',
+                2 => 'application/json',
+            ],
         ],
         'content_type_whitelist' => [
             'User\\V1\\Rpc\\Signup\\Controller' => [
@@ -220,6 +240,10 @@ return [
             'User\\V1\\Rpc\\ResetPasswordNewPassword\\Controller' => [
                 0 => 'application/json',
                 1 => 'application/vnd.aqilix.bootstrap.v1+json',
+            ],
+            'User\\V1\\Rest\\Room\\Controller' => [
+                0 => 'application/vnd.user.v1+json',
+                1 => 'application/json',
             ],
         ],
     ],
@@ -581,11 +605,37 @@ return [
                 1 => 'POST',
             ],
             'collection_query_whitelist' => [],
-            'page_size' => 25,
+            'page_size' => '2',
             'page_size_param' => 'limit',
             'entity_class' => \User\Entity\UserProfile::class,
             'collection_class' => \User\V1\Rest\Profile\ProfileCollection::class,
             'service_name' => 'Profile',
+        ],
+        'User\\V1\\Rest\\Room\\Controller' => [
+            'listener' => \User\V1\Rest\Room\RoomResource::class,
+            'route_name' => 'user.rest.room',
+            'route_identifier_name' => 'uuid',
+            'collection_name' => 'room',
+            'entity_http_methods' => [
+                0 => 'GET',
+                1 => 'PATCH',
+                2 => 'PUT',
+                3 => 'DELETE',
+            ],
+            'collection_http_methods' => [
+                0 => 'GET',
+                1 => 'POST',
+            ],
+            'collection_query_whitelist' => [
+                0 => 'order',
+                1 => 'asc',
+                2 => 'name',
+            ],
+            'page_size' => '25',
+            'page_size_param' => 'limit',
+            'entity_class' => \User\Entity\Room::class,
+            'collection_class' => \User\V1\Rest\Room\RoomCollection::class,
+            'service_name' => 'Room',
         ],
     ],
     'zf-hal' => [
@@ -601,6 +651,54 @@ return [
                 'route_name' => 'user.rest.profile',
                 'route_identifier_name' => 'uuid',
                 'is_collection' => true,
+            ],
+            'User\\V1\\Rest\\Room\\RoomEntity' => [
+                'entity_identifier_name' => 'uuid',
+                'route_name' => 'user.rest.room',
+                'route_identifier_name' => 'uuid',
+                'hydrator' => \Zend\Hydrator\ArraySerializable::class,
+            ],
+            \User\V1\Rest\Room\RoomCollection::class => [
+                'entity_identifier_name' => 'uuid',
+                'route_name' => 'user.rest.room',
+                'route_identifier_name' => 'uuid',
+                'is_collection' => true,
+            ],
+            'User\\Entity\\Room\\' => [
+                'entity_identifier_name' => 'uuid',
+                'route_name' => 'user.rest.room',
+                'route_identifier_name' => 'uuid',
+                'hydrator' => 'User\\Hydrator\\UserProfile',
+            ],
+            \User\Entity\Room::class => [
+                'entity_identifier_name' => 'uuid',
+                'route_name' => 'user.rest.room',
+                'route_identifier_name' => 'uuid',
+                'hydrator' => 'User\\Hydrator\\Room',
+            ],
+            'User\\Entity\\Room.php' => [
+                'entity_identifier_name' => 'uuid',
+                'route_name' => 'user.rest.room',
+                'route_identifier_name' => 'uuid',
+                'hydrator' => \Zend\Hydrator\ArraySerializable::class,
+            ],
+            'User\\Entity' => [
+                'entity_identifier_name' => 'uuid',
+                'route_name' => 'user.rest.room',
+                'route_identifier_name' => 'uuid',
+                'hydrator' => \Zend\Hydrator\ArraySerializable::class,
+            ],
+            'User\\Entity/' => [
+                'entity_identifier_name' => 'uuid',
+                'route_name' => 'user.rest.room',
+                'route_identifier_name' => 'uuid',
+                'hydrator' => \Zend\Hydrator\ArraySerializable::class,
+            ],
+            'User\\Entity\\' => [
+                'entity_identifier_name' => 'uuid',
+                'route_name' => 'user.rest.room',
+                'route_identifier_name' => 'uuid',
+                'hydrator' => \Zend\Hydrator\ArraySerializable::class,
             ],
         ],
     ],
@@ -631,6 +729,22 @@ return [
                         'PATCH' => false,
                         'DELETE' => false,
                     ],
+                ],
+            ],
+            'User\\V1\\Rest\\Room\\Controller' => [
+                'collection' => [
+                    'GET' => true,
+                    'POST' => true,
+                    'PUT' => false,
+                    'PATCH' => false,
+                    'DELETE' => false,
+                ],
+                'entity' => [
+                    'GET' => true,
+                    'POST' => false,
+                    'PUT' => false,
+                    'PATCH' => true,
+                    'DELETE' => true,
                 ],
             ],
         ],

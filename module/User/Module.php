@@ -30,6 +30,10 @@ class Module implements
         $profileEventListener = $serviceManager->get('user.profile.listener');
         $profileService = $serviceManager->get('user.profile');
         $profileEventListener->attach($profileService->getEventManager());
+        // room
+        $roomEventListener = $serviceManager->get('room.listener');
+        $roomService = $serviceManager->get('room');
+        $roomEventListener->attach($roomService->getEventManager());
         // reset password
         $resetPasswordService = $serviceManager->get('user.resetpassword');
         $resetPasswordEventListener = $serviceManager->get('user.resetpassword.listener');

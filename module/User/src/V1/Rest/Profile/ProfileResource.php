@@ -6,6 +6,7 @@ use ZF\Rest\AbstractResourceListener;
 use ZF\ApiProblem\ApiProblemResponse;
 use User\Mapper\UserProfile as UserProfileMapper;
 use User\V1\Service\Profile as UserProfileService;
+use Zend\Paginator\Paginator as ZendPaginator;
 
 class ProfileResource extends AbstractResourceListener
 {
@@ -27,7 +28,11 @@ class ProfileResource extends AbstractResourceListener
      */
     public function create($data)
     {
-        return new ApiProblem(405, 'The POST method has not been defined');
+        // BARU DIBUAT
+        $userProfile = $this->getUserProfileMapper()->fetchOneBy(['uuid' => $id]);
+
+        return $userProfile;
+        //return new ApiProblem(405, 'The POST method has not been defined');
     }
 
     /**
@@ -74,13 +79,62 @@ class ProfileResource extends AbstractResourceListener
      * @param  array $params
      * @return ApiProblem|mixed
      */
-    public function fetchAll()  //($params = [])
-    {
-        #BUATAN SENDIRI
-        $userProfiles = $this->getUserProfileMapper()->fetchAll();
 
-        return new ApiProblem(422, 'lalala yyeyyey dmdcmsbvsmbcnsvbncbd e');
+    //  // INI FUNGSI fetchAll yang disimple
+    public function fetchAll($params = [])
+    {
+        $queryParams = [];
+        $qb = $this->getUserProfileMapper()->fetchAll($queryParams);  
+        //return $qb;  // INI RETURN TANPA PAGINATION
+
+        // FUNGSI createPaginatorAdapter DARI BAWAAN BANG HAKIMx
+        // $paginatorAdapter = $this->getUserProfileMapper()->createPaginatorAdapter($qb);
+        $paginatorAdapter = $this->getUserProfileMapper()->buildListPaginatorAdapter($queryParams, $order, $asc);
+        return new ZendPaginator($paginatorAdapter);
+
+        // $paginatorAdapter = $this->getUserProfileMapper()->buildListPaginatorAdapter($queryParams, $order, $asc);
+        // return new ZendPaginator($paginatorAdapter);  
     }
+
+    // INI FUNGSI fetchAll full dari Bang Hakim
+    // public function fetchAll($params = [])
+    // {
+    //     $urlParams = $params->toArray();
+    //     // $userProfile = $this->fetchUserProfile();
+    //     // if(is_null($userProfile)) {
+    //     //     return new ApiProblemResponse(new ApiProblem(401, 'You\'re not authorized'));
+    //     // }
+
+    //     // $queryParams = [];
+    //     // if (! is_null($userProfile->getAccount())) {
+    //     //     $queryParams  = [
+    //     //         'account' => $userProfile->getAccount()->getUuid(),
+    //     //     ];
+    //     // }
+
+    //     $order = null;
+    //     $asc   = false;
+    //     if (isset($urlParams['order'])) {
+    //         $order = $urlParams['order'];
+    //         unset($urlParams['order']);
+    //     }
+
+    //     if (isset($urlParams['asc'])) {
+    //         $asc = $urlParams['asc'];
+    //         unset($urlParams['asc']);
+    //     }
+
+    //     // $queryParams = array_merge($queryParams, $urlParams);
+    //     $queryParams = [];
+    //     $qb = $this->getUserProfileMapper()->fetchAll($queryParams, $order, $asc);  
+    //     return $qb; // INI RETURN TANPA PAGINATION
+
+    //     //$paginatorAdapter = $this->getUserProfileMapper()->createPaginatorAdapter($qb);
+    //     //return new ZendPaginator($paginatorAdapter);
+
+    //     // $paginatorAdapter = $this->getUserProfileMapper()->buildListPaginatorAdapter($queryParams, $order, $asc);
+    //     // return $paginatorAdapter;
+    // }
 
     /**
      * Patch (partial in-place update) a resource
