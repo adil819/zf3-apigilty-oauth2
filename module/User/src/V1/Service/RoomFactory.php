@@ -8,7 +8,8 @@ class RoomFactory implements FactoryInterface
 {
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $roomMapper = $container->get('User\Mapper\Room');
-        return new Room($roomMapper);
+        $roomService = new Room();
+        $roomService->setLogger($container->get("logger_default"));
+        return $roomService;
     }
 }

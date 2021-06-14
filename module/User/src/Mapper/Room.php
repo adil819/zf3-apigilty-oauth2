@@ -4,13 +4,11 @@ namespace User\Mapper;
 
 use Aqilix\ORM\Mapper\AbstractMapper;
 use Aqilix\ORM\Mapper\MapperInterface;
-use Doctrine\ORM\Tools\Pagination\Paginator as DoctrinePaginator;
-use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrinePaginatorAdapter;
 
 /**
  * @author Dolly Aswin <dolly.aswin@gmail.com>
  *
- * UserProfile Mapper
+ * Room Mapper
  */
 class Room extends AbstractMapper implements MapperInterface
 {

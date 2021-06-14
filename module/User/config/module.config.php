@@ -16,12 +16,10 @@ return [
             'user.activation' => \User\V1\Service\UserActivationFactory::class,
             'user.signup' => \User\V1\Service\SignupFactory::class,
             'user.profile' => \User\V1\Service\ProfileFactory::class,
-            'room' => \User\V1\Service\RoomFactory::class,
             'user.activation.listener' => \User\V1\Service\Listener\UserActivationEventListenerFactory::class,
             'user.resetpassword.listener' => \User\V1\Service\Listener\ResetPasswordEventListenerFactory::class,
             'user.signup.listener' => \User\V1\Service\Listener\SignupEventListenerFactory::class,
             'user.profile.listener' => \User\V1\Service\Listener\ProfileEventListenerFactory::class,
-            'room.listener' => \User\V1\Service\Listener\RoomEventListenerFactory::class,
             'user.notification.email.signup.listener' => \User\V1\Notification\Email\Listener\SignupEventListenerFactory::class,
             'user.notification.email.activation.listener' => \User\V1\Notification\Email\Listener\ActivationEventListenerFactory::class,
             'user.notification.email.resetpassword.listener' => \User\V1\Notification\Email\Listener\ResetPasswordEventListenerFactory::class,
@@ -34,6 +32,8 @@ return [
             'user.auth.unauthorized.listener' => \User\Service\Listener\UnauthorizedUserListenerFactory::class,
             \User\V1\Rest\Profile\ProfileResource::class => \User\V1\Rest\Profile\ProfileResourceFactory::class,
             \User\V1\Rest\Room\RoomResource::class => \User\V1\Rest\Room\RoomResourceFactory::class,
+            \User\V1\Service\Room::class => \User\V1\Service\RoomFactory::class,
+            \User\V1\Service\Listener\RoomEventListener::class => \User\V1\Service\Listener\RoomEventListenerFactory::class,
         ],
         'abstract_factories' => [
             0 => \User\Mapper\AbstractMapperFactory::class,
@@ -262,6 +262,9 @@ return [
         ],
         'User\\V1\\Rpc\\ResetPasswordNewPassword\\Controller' => [
             'input_filter' => 'User\\V1\\Rpc\\ResetPasswordNewPassword\\Validator',
+        ],
+        'User\\V1\\Rest\\Room\\Controller' => [
+            'input_filter' => 'User\\V1\\Rest\\Room\\Validator',
         ],
     ],
     'input_filter_specs' => [
@@ -586,6 +589,33 @@ return [
                 'name' => 'confirmNewPassword',
                 'description' => 'Confirm New Password',
                 'error_message' => 'Confirm New Password not valid',
+            ],
+        ],
+        'User\\V1\\Rest\\Room\\Validator' => [
+            0 => [
+                'required' => true,
+                'validators' => [],
+                'filters' => [],
+                'name' => 'capacity',
+                'description' => 'Capacity',
+                'field_type' => 'Integer',
+                'error_message' => 'Capacity Required',
+            ],
+            1 => [
+                'required' => true,
+                'validators' => [],
+                'filters' => [
+                    0 => [
+                        'name' => \Zend\Filter\StringTrim::class,
+                        'options' => [
+                            'charlist' => '!,@,#,$,%,^,&,*,(,),-,_,+,=,|,],},{,[,:,;,:',
+                        ],
+                    ],
+                ],
+                'name' => 'name',
+                'description' => 'Name',
+                'field_type' => 'String',
+                'error_message' => 'Name Required',
             ],
         ],
     ],

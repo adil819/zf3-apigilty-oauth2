@@ -12,15 +12,26 @@ class RoomEvent extends Event
     /**#@+
      * Room events triggered by eventmanager
      */
+    # UPDATE DITIRU DARI PROFILE
     const EVENT_UPDATE_ROOM  = 'update.room';
     const EVENT_UPDATE_ROOM_ERROR   = 'update.room.error';
     const EVENT_UPDATE_ROOM_SUCCESS = 'update.room.success';
+
+    #INSERT DITIRU DARI SIGNUP
+    const EVENT_INSERT_ROOM  = 'insert.room';
+    const EVENT_INSERT_ROOM_ERROR   = 'insert.room.error';
+    const EVENT_INSERT_ROOM_SUCCESS = 'insert.room.success';
+
+    #CREATE DITIRU DARI DEVICE
+    const EVENT_CREATE_ROOM  = 'create.room';
+    const EVENT_CREATE_ROOM_ERROR   = 'create.room.error';
+    const EVENT_CREATE_ROOM_SUCCESS = 'create.room.success';
     /**#@-*/
 
     /**
      * @var User\Entity\UserRoom
      */
-    protected $userRoomEntity;
+    protected $roomEntity;
 
     /**
      * @var Zend\InputFilter\InputFilterInterface
@@ -37,21 +48,14 @@ class RoomEvent extends Event
      */
     protected $exception;
 
+    // INI DIMODIFIKASI DARI SignupEvent
     /**
-     * @return the $user
+     * @param Array $roomData
      */
-    public function getRoomEntity()
+    public function setRoomData(array $roomData)
     {
-        return $this->roomEntity;
-    }
-
-    /**
-     * @param Aqilix\ORM\Entity\EntityInterface $room
-     */
-    public function setRoomEntity(EntityInterface $room)
-    {
-        $this->roomEntity = $room;
-    }
+        $this->roomData = $roomData;
+    }    
 
     /**
      * @return the $updateData
@@ -99,5 +103,23 @@ class RoomEvent extends Event
     public function setException(Exception $exception)
     {
         $this->exception = $exception;
+    }
+
+    /**
+     * Get the value of roomEntity
+     */
+    public function getRoomEntity()
+    {
+        return $this->roomEntity;
+    }
+
+    /**
+     * Set the value of roomEntity
+     */
+    public function setRoomEntity($roomEntity): self
+    {
+        $this->roomEntity = $roomEntity;
+
+        return $this;
     }
 }

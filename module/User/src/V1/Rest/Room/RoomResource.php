@@ -1,20 +1,24 @@
 <?php
 namespace User\V1\Rest\Room;
 
+use Psr\Log\LoggerAwareTrait;
+use RuntimeException;
 use ZF\ApiProblem\ApiProblem;
-use ZF\Rest\AbstractResourceListener;
 use ZF\ApiProblem\ApiProblemResponse;
+use ZF\Rest\AbstractResourceListener;
 use User\Mapper\Room as RoomMapper;
 use Zend\Paginator\Paginator as ZendPaginator;
 
 class RoomResource extends AbstractResourceListener
 {
-    protected $roomMapper;
+    use LoggerAwareTrait;
 
+    protected $roomMapper;
     protected $roomService;
 
-    public function __construct(RoomMapper $roomMapper)
-    {
+    public function __construct(
+        \User\Mapper\Room $roomMapper
+    ) {
         $this->setRoomMapper($roomMapper);
     }
 
@@ -26,7 +30,46 @@ class RoomResource extends AbstractResourceListener
      */
     public function create($data)
     {
-        return new ApiProblem(405, 'The POST method has not been defined');
+        // var_dump("tes aja dlu, hbis ni diapus");exit();
+        try{
+            $inputFilter = $this->getInputFilter();
+            // $roomUuid = $inputFilter->getValue('uuid');
+            // $room = $this->getRoomMapper()->fetchOneBy(['uuid' => $roomUuid]);
+            // if(! is_null($room)){
+            //     return new ApiProblem(422, "Room with uuid ".$roomUuid."already exist!");
+            // }
+            
+            $room = $this->getRoomService()->save($inputFilter);
+        } catch (RuntimeException $e){
+            return new ApiProblem(500, $e->getMessage());
+        }
+        return $room;
+    }
+
+
+    /**
+     * Patch (partial in-place update) a resource
+     *
+     * @param  mixed $id
+     * @param  mixed $data
+     * @return ApiProblem|mixed
+     */
+    public function patch($id, $data)
+    {
+        // var_dump("YEYY BISA MASUK PATCH");exit();
+        $room  = $this->getRoomMapper()->fetchOneBy(['uuid' => $id]);
+        if (is_null($room)) {
+            return new ApiProblem(404, "Room Not Found");
+        }
+        $inputFilter = $this->getInputFilter()->getValues();
+
+        // var_dump($inputFilter);
+        try {
+            $room = $this->getRoomService()->update($room, $this->getInputFilter());
+            return $room;
+        } catch (RuntimeException $e) {
+            return new ApiProblemResponse(new ApiProblem(500, $e->getMessage()));
+        }
     }
 
     /**
@@ -76,7 +119,6 @@ class RoomResource extends AbstractResourceListener
     public function fetchAll($params = [])
     {
         $urlParams = $params->toArray();
-        // var_dump($urlParams);exit;
         $queryParams = [];
         $queryParams = array_merge($urlParams, $queryParams);
         $qb = $this->getRoomMapper()->fetchAll($queryParams);  
@@ -88,17 +130,6 @@ class RoomResource extends AbstractResourceListener
          return new ZendPaginator($paginatorAdapter);
     }
 
-    /**
-     * Patch (partial in-place update) a resource
-     *
-     * @param  mixed $id
-     * @param  mixed $data
-     * @return ApiProblem|mixed
-     */
-    public function patch($id, $data)
-    {
-        return new ApiProblem(405, 'The PATCH method has not been defined for individual resources');
-    }
 
     /**
      * Patch (partial in-place update) a collection or members of a collection
@@ -135,7 +166,7 @@ class RoomResource extends AbstractResourceListener
     }
 
     /**
-     * @return the $userProfileMapper
+     * @return the $roomMapper
      */
     public function getRoomMapper()
     {
@@ -143,10 +174,28 @@ class RoomResource extends AbstractResourceListener
     }
 
     /**
-     * @param RoomMapper $userProfileMapper
+     * @param RoomMapper $roomMapper
      */
     public function setRoomMapper(RoomMapper $roomMapper)
     {
         $this->roomMapper = $roomMapper;
+    }
+
+    /**
+     * Get the value of roomService
+     */
+    public function getRoomService()
+    {
+        return $this->roomService;
+    }
+
+    /**
+     * Set the value of roomService
+     */
+    public function setRoomService($roomService): self
+    {
+        $this->roomService = $roomService;
+
+        return $this;
     }
 }

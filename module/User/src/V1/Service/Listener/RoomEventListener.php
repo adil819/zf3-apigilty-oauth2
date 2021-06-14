@@ -8,7 +8,7 @@ use Zend\InputFilter\InputFilterInterface;
 use Zend\InputFilter\Exception\InvalidArgumentException;
 use Psr\Log\LoggerAwareTrait;
 use User\Mapper\Room as RoomMapper;
-use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
+use User\Entity\Room as RoomEntity;
 use User\V1\RoomEvent;
 
 class RoomEventListener implements ListenerAggregateInterface
@@ -31,13 +31,9 @@ class RoomEventListener implements ListenerAggregateInterface
      * @param array $config
      */
     public function __construct(
-        RoomMapper $roomMapper,
-        DoctrineObject $roomHydrator,
-        array $config = []
+        RoomMapper $roomMapper
     ) {
-        $this->setRoomMapper($roomMapper);
-        $this->setRoomHydrator($roomHydrator);
-        $this->setConfig($config);
+        $this->setRoomMapper($roomMapper); 
     }
 
     /**
@@ -47,10 +43,43 @@ class RoomEventListener implements ListenerAggregateInterface
     public function attach(EventManagerInterface $events, $priority = 1)
     {
         $this->listeners[] = $events->attach(
+            RoomEvent::EVENT_CREATE_ROOM,
+            [$this, 'createRoom'],
+            499
+        );
+
+        $this->listener[] = $events->attach(
             RoomEvent::EVENT_UPDATE_ROOM,
             [$this, 'updateRoom'],
             499
         );
+    }
+    
+    # DITIRU DARI CREATEDEVICE()
+    public function createRoom(RoomEvent $event){
+        try {
+            if (! $event->getInputFilter() instanceof InputFilterInterface){
+                throw new InvalidArgumentException('Input Filter not set');
+            }
+
+            $data = $event->getInputFilter()->getValues();
+            $roomEntity = new RoomEntity;
+            $room = $this->getRoomHydrator()->hydrate($data, $roomEntity);
+            
+            $result = $this->getRoomMapper()->save($room);
+            $event->setRoomEntity($room);
+            $uuid = $result->getUuid();
+            $this->logger->log(
+                \Psr\Log\LogLevel::INFO,
+                "{function} {uuid}: New data created successfully",
+                [
+                    'uuid' => $uuid,
+                    "function" => __FUNCTION__
+                ]
+            );
+        } catch (\Exception $e) {
+            $this->logger->log(\Psr\Log\LogLevel::ERROR, "{function} : Something Error! \nError_message: ".$e->getMessage(), ["function" => __FUNCTION__]);
+        } 
     }
 
     /**
@@ -70,22 +99,23 @@ class RoomEventListener implements ListenerAggregateInterface
             }
 
             // adding filter for photo
-            $inputPhoto  = $event->getInputFilter()->get('photo');
-            $inputPhoto->getFilterChain()
-                    ->attach(new \Zend\Filter\File\RenameUpload([
-                        'target' => $this->getConfig()['backup_dir'],
-                        'randomize' => true,
-                        'use_upload_extension' => true
-                    ]));
+            // $inputPhoto  = $event->getInputFilter()->get('photo');
+            // $inputPhoto->getFilterChain()
+            //         ->attach(new \Zend\Filter\File\RenameUpload([
+            //             'target' => $this->getConfig()['backup_dir'],
+            //             'randomize' => true,
+            //             'use_upload_extension' => true
+            //         ]));
             $room = $this->getRoomHydrator()->hydrate($updateData, $roomEntity);
             $this->getRoomMapper()->save($room);
             $event->setRoomEntity($room);
             $this->logger->log(
                 \Psr\Log\LogLevel::INFO,
-                "{function} {username}",
+                "{function} room: {id} updated, capacity: {caps}",
                 [
                     "function" => __FUNCTION__,
-                    "username" => $roomEntity->getUser()->getUsername()
+                    "id" => $roomEntity->getUuid(),
+                    "caps" => $roomEntity->getCapacity()
                 ]
             );
         } catch (\Exception $e) {
@@ -141,4 +171,6 @@ class RoomEventListener implements ListenerAggregateInterface
     {
         $this->roomHydrator = $roomHydrator;
     }
+
+
 }

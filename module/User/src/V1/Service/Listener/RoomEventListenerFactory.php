@@ -10,9 +10,10 @@ class RoomEventListenerFactory implements FactoryInterface
     {
         $roomMapper    = $container->get('User\Mapper\Room');
         $roomHydrator  = $container->get('HydratorManager')->get('User\Hydrator\Room');
-        $roomEventConfig   = $container->get('Config')['user']['photo'];
-        $roomEventListener = new RoomEventListener($roomMapper, $roomHydrator, $roomEventConfig);
+        
+        $roomEventListener = new RoomEventListener($roomMapper);
         $roomEventListener->setLogger($container->get("logger_default"));
+        $roomEventListener->setRoomHydrator($roomHydrator);
         return $roomEventListener;
     }
 }

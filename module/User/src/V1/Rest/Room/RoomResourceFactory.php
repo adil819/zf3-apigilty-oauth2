@@ -5,8 +5,11 @@ class RoomResourceFactory
 {
     public function __invoke($services)
     {
-        $roomMapper = $services->get('User\Mapper\Room');
-        // $room = $services->get('room'); // ATAU MUNGKIN get('user.room')
-        return new RoomResource($roomMapper);
+        // $roomMapper = $services->get('User\Mapper\Room');
+        $roomMapper = $services->get(\User\Mapper\Room::class);
+        $roomService = $services->get(\User\V1\Service\Room::class);
+        $resource = new RoomResource($roomMapper);
+        $resource->setRoomService($roomService);
+        return $resource;
     }
 }

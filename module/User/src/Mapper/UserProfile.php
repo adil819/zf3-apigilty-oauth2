@@ -43,7 +43,7 @@ class UserProfile extends AbstractMapper implements MapperInterface
     }
 
     public function create($data){
-
+        
     }
 
 
