@@ -48,9 +48,15 @@ class RoomEventListener implements ListenerAggregateInterface
             499
         );
 
-        $this->listener[] = $events->attach(
+        $this->listeners[] = $events->attach(
             RoomEvent::EVENT_UPDATE_ROOM,
             [$this, 'updateRoom'],
+            499
+        );
+
+        $this->listeners[] = $events->attach(
+            RoomEvent::EVENT_DELETE_ROOM,
+            [$this, 'deleteRoom'],
             499
         );
     }
@@ -123,6 +129,49 @@ class RoomEventListener implements ListenerAggregateInterface
             return $e;
         }
     }
+
+    public function deleteRoom(RoomEvent $event)
+    {
+        try {
+            $deletedData = $event->getRoomEntity();
+            $this->getRoomMapper()->delete($deletedData);
+            $uuid = $deletedData->getUuid();
+
+            $this->logger->log(
+                \Psr\Log\LogLevel::INFO,
+                "{function} {uuid}: Data deleted successfully",
+                [
+                    'uuid' => $uuid,
+                    "function" => __FUNCTION__
+                ]
+            );
+        } catch (\Exception $e) {
+            $this->logger->log(\Psr\Log\LogLevel::ERROR, "{function} : Something Error! \nError_message: ".$e->getMessage(), ["function" => __FUNCTION__]);
+        }
+    }
+
+    // public function deleteRoom(RoomEvent $event)
+    // {
+    //     try {
+    //         $roomEntity = $event->getRoomEntity();
+  
+    //         $room = $this->getRoomHydrator()->hydrate($roomEntity);
+    //         $this->getRoomMapper()->save($room);
+    //         $event->setRoomEntity($room);
+    //         $this->logger->log(
+    //             \Psr\Log\LogLevel::INFO,
+    //             "{function} room: {id} deleted, name: {name}",
+    //             [
+    //                 "function" => __FUNCTION__,
+    //                 "id" => $roomEntity->getUuid(),
+    //                 "name" => $roomEntity->getName()
+    //             ]
+    //         );
+    //     } catch (\Exception $e) {
+    //         $event->stopPropagation(true);
+    //         return $e;
+    //     }
+    // }
 
     /**
      * @return the $config

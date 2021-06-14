@@ -23,6 +23,6 @@
       <gedmo:timestampable on="update"/>
     </field>
     <field name="deletedAt" type="datetime" column="deleted_at" nullable="true" />
-    <gedmo:soft-deleteable field-name="deletedAt" time-aware="false" />
+    <!-- <gedmo:soft-deleteable field-name="deletedAt" time-aware="false" /> -->
   </entity>
 </doctrine-mapping>

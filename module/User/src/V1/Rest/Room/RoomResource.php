@@ -80,7 +80,14 @@ class RoomResource extends AbstractResourceListener
      */
     public function delete($id)
     {
-        return new ApiProblem(405, 'The DELETE method has not been defined for individual resources');
+        // return new ApiProblem(405, 'The DELETE method has not been defined for individual resources');
+        $room = $this->getRoomMapper()->fetchOneBy(['uuid' => $id]);
+        if (is_null($room)){
+            return new ApiProblem(404, "Room Not Found KENAPAAA");
+        }
+        $inputFilter = $this->getInputFilter();
+
+        return $this->getRoomService()->delete($room);
     }
 
     /**

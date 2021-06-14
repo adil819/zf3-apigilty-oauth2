@@ -50,4 +50,6 @@ class Room extends AbstractMapper implements MapperInterface
         return $query;
     }
 
+    // public function delete(array $param)
+
 }

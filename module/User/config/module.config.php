@@ -635,7 +635,7 @@ return [
                 1 => 'POST',
             ],
             'collection_query_whitelist' => [],
-            'page_size' => '2',
+            'page_size' => '25',
             'page_size_param' => 'limit',
             'entity_class' => \User\Entity\UserProfile::class,
             'collection_class' => \User\V1\Rest\Profile\ProfileCollection::class,

@@ -115,7 +115,7 @@ class Room
         $roomEvent->setUpdateData($newData->getValues());
         $roomEvent->setRoomEntity($room);
         $roomEvent->setName(RoomEvent::EVENT_UPDATE_ROOM);
-        $create = $this->getEventManager()->triggerEvent($roomEvent); //=> APA YANG TERJADI?
+        $create = $this->getEventManager()->triggerEvent($roomEvent); 
         if ($create->stopped()){
             $roomEvent->setName(RoomEvent::EVENT_UPDATE_ROOM_ERROR);
             $roomEvent->setException($create->last());
@@ -125,6 +125,24 @@ class Room
             $roomEvent->setName(RoomEvent::EVENT_UPDATE_ROOM_SUCCESS);
             $this->getEventManager()->triggerEvent($roomEvent);
             return $roomEvent->getRoomEntity();
+        }
+    }
+
+    public function delete(RoomEntity $room){
+        $roomEvent = new RoomEvent();
+        $roomEvent->setRoomEntity($room);
+        $roomEvent->setName(RoomEvent::EVENT_DELETE_ROOM);
+        $delete = $this->getEventManager()->triggerEvent($roomEvent);
+        if ($delete->stopped()){
+            $roomEvent->setName(RoomEvent::EVENT_DELETE_ROOM_ERROR);
+            $roomEvent->setException($delete->last());
+            $this->getEventManager()->triggerEvent($roomEvent);
+            throw $roomEvent->getException();
+        } else {
+            $roomEvent->setName(RoomEvent::EVENT_DELETE_ROOM_SUCCESS);
+            $this->getEventManager()->triggerEvent($roomEvent);
+            // return $roomEvent->getRoomEntity();
+            return true;  // => DISINI BEDANYA KALAU DELETE
         }
     }
 }

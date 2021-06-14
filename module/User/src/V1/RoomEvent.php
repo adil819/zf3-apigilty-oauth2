@@ -26,6 +26,12 @@ class RoomEvent extends Event
     const EVENT_CREATE_ROOM  = 'create.room';
     const EVENT_CREATE_ROOM_ERROR   = 'create.room.error';
     const EVENT_CREATE_ROOM_SUCCESS = 'create.room.success';
+
+    #DELETE BUAT SENDIRI TANPA CONTEK DENGAN MENGINGAT ALUR NYA
+    const EVENT_DELETE_ROOM = 'delete.room';
+    const EVENT_DELETE_ROOM_ERROR = 'delete.room.error';
+    const EVENT_DELETE_ROOM_SUCCESS = 'delete.room.success';
+
     /**#@-*/
 
     /**
