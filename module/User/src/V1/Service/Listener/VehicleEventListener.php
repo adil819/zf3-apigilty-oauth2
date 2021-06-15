@@ -117,11 +117,11 @@ class VehicleEventListener implements ListenerAggregateInterface
             $event->setVehicleEntity($vehicle);
             $this->logger->log(
                 \Psr\Log\LogLevel::INFO,
-                "{function} vehicle: {id} updated, capacity: {caps}",
+                "{function} vehicle: {id} updated, brand: {brand}",
                 [
                     "function" => __FUNCTION__,
                     "id" => $vehicleEntity->getUuid(),
-                    "caps" => $vehicleEntity->getCapacity()
+                    "brand" => $vehicleEntity->getBrand()
                 ]
             );
         } catch (\Exception $e) {

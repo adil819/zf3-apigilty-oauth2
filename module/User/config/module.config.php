@@ -37,7 +37,6 @@ return [
             \User\V1\Rest\Vehicle\VehicleResource::class => \User\V1\Rest\Vehicle\VehicleResourceFactory::class,
             \User\V1\Service\Vehicle::class => \User\V1\Service\VehicleFactory::class,
             \User\V1\Service\Listener\VehicleEventListener::class => \User\V1\Service\Listener\VehicleEventListenerFactory::class,
-            
         ],
         'abstract_factories' => [
             0 => \User\Mapper\AbstractMapperFactory::class,
@@ -750,6 +749,8 @@ return [
                 0 => 'order',
                 1 => 'asc',
                 2 => 'brand',
+                3 => 'wheel',
+                4 => 'productionYear',
             ],
             'page_size' => 25,
             'page_size_param' => 'limit',
@@ -820,7 +821,7 @@ return [
                 'route_identifier_name' => 'uuid',
                 'hydrator' => \Zend\Hydrator\ArraySerializable::class,
             ],
-            \User\V1\Rest\Vehicle\VehicleEntity::class => [
+            'User\\V1\\Rest\\Vehicle\\VehicleEntity' => [
                 'entity_identifier_name' => 'uuid',
                 'route_name' => 'user.rest.vehicle',
                 'route_identifier_name' => 'uuid',
@@ -831,12 +832,6 @@ return [
                 'route_name' => 'user.rest.vehicle',
                 'route_identifier_name' => 'uuid',
                 'is_collection' => true,
-            ],
-            \User\Entity\Vehicle::class => [
-                'entity_identifier_name' => 'uuid',
-                'route_name' => 'user.rest.vehicle',
-                'route_identifier_name' => 'uuid',
-                'hydrator' => 'User\\Hydrator\\Room',
             ],
             \User\Entity\Vehicle::class => [
                 'entity_identifier_name' => 'uuid',

@@ -72,23 +72,23 @@ class VehicleResource extends AbstractResourceListener
         }
     }
 
-    // /**
-    //  * Delete a resource
-    //  *
-    //  * @param  mixed $id
-    //  * @return ApiProblem|mixed
-    //  */
-    // public function delete($id)
-    // {
-    //     // return new ApiProblem(405, 'The DELETE method has not been defined for individual resources');
-    //     $vehicle = $this->getVehicleMapper()->fetchOneBy(['uuid' => $id]);
-    //     if (is_null($vehicle)){
-    //         return new ApiProblem(404, "Vehicle Not Found KENAPAAA");
-    //     }
-    //     $inputFilter = $this->getInputFilter();
+    /**
+     * Delete a resource
+     *
+     * @param  mixed $id
+     * @return ApiProblem|mixed
+     */
+    public function delete($id)
+    {
+        // return new ApiProblem(405, 'The DELETE method has not been defined for individual resources');
+        $vehicle = $this->getVehicleMapper()->fetchOneBy(['uuid' => $id]);
+        if (is_null($vehicle)){
+            return new ApiProblem(404, "Vehicle Not Found KENAPAAA");
+        }
+        $inputFilter = $this->getInputFilter();
 
-    //     return $this->getVehicleService()->delete($vehicle);
-    // }
+        return $this->getVehicleService()->delete($vehicle);
+    }
 
     // /**
     //  * Delete a collection, or members of a collection

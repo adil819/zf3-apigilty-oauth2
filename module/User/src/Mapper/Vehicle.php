@@ -27,20 +27,27 @@ class Vehicle extends AbstractMapper implements MapperInterface
         $qb = $this->getEntityRepository()->createQueryBuilder('r');
         $cacheKey = '';
 
-        // if (isset($params['capacity'])) {
-        //     $params['capacity'] = (int)$params['capacity'];
-        //     $qb->andWhere('r.capacity > :capacity')
-        //        ->setParameter('capacity', $params['capacity']);
-        //     $cacheKey .= '_' . $params['capacity'];
-        // }
-
-        // di Apigility => Collection Query String Whitelist => tambah kolom nya
+        // di Apigility => Collection Query String Whitelist => tambah kolom nya        
+        
         if (isset($params['brand'])) {
             // $params['brand'] = (int)$params['brand'];
             $qb->andWhere('r.brand = :brand')
                ->setParameter('brand', $params['brand']);
             $cacheKey .= '_' . $params['brand'];
         }
+        if (isset($params['wheel'])) {
+            // $params['wheel'] = (int)$params['wheel'];
+            $qb->andWhere('r.wheel = :wheel')
+               ->setParameter('wheel', $params['wheel']);
+            $cacheKey .= '_' . $params['wheel'];
+        }
+        if (isset($params['productionYear'])) {
+            // $params['wheel'] = (int)$params['wheel'];
+            $qb->andWhere('r.productionYear > :productionYear')
+               ->setParameter('productionYear', $params['productionYear']);
+            $cacheKey .= '_' . $params['productionYear'];
+        }
+        
 
         $query = $qb->getQuery();
         $query->useQueryCache(true);
