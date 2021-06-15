@@ -82,20 +82,4 @@ class Room implements EntityInterface
     {
         return $this->capacity;
     }
-
-    // /**
-    //  * @return the $dateOfBirth
-    //  */
-    // public function getDateOfBirth()
-    // {
-    //     return $this->dateOfBirth;
-    // }
-
-    // /**
-    //  * @param \DateTime $dateOfBirth
-    //  */
-    // public function setDateOfBirth($dateOfBirth)
-    // {
-    //     $this->dateOfBirth = $dateOfBirth;
-    // }
 }

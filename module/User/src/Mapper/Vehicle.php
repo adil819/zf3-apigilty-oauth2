@@ -22,6 +22,7 @@ class Vehicle extends AbstractMapper implements MapperInterface
 
     // INI FUNGSI fetchAll dari Bang Hakim untuk di mapper
     
+    // OVERRIDING fetchAll class parents, yaitu AbstractMapper
     public function fetchAll(array $params = [], $order = null, $asc = false)
     {
         $qb = $this->getEntityRepository()->createQueryBuilder('r');

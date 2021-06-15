@@ -111,7 +111,7 @@ class RoomResource extends AbstractResourceListener
     {
         $room = $this->getRoomMapper()->fetchOneBy(['uuid' => $id]);
         if (is_null($room)) {
-            return new ApiProblemResponse(new ApiProblem(404, "User Profile not found"));
+            return new ApiProblemResponse(new ApiProblem(404, "Room not found"));
         }
 
         return $room;

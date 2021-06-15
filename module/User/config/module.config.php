@@ -37,6 +37,9 @@ return [
             \User\V1\Rest\Vehicle\VehicleResource::class => \User\V1\Rest\Vehicle\VehicleResourceFactory::class,
             \User\V1\Service\Vehicle::class => \User\V1\Service\VehicleFactory::class,
             \User\V1\Service\Listener\VehicleEventListener::class => \User\V1\Service\Listener\VehicleEventListenerFactory::class,
+            \User\V1\Rest\RoomUsers\RoomUsersResource::class => \User\V1\Rest\RoomUsers\RoomUsersResourceFactory::class,
+            \User\V1\Service\RoomUsers::class => \User\V1\Service\RoomUsersFactory::class,
+            \User\V1\Service\Listener\RoomUsersEventListener::class => \User\V1\Service\Listener\RoomUsersEventListenerFactory::class,
         ],
         'abstract_factories' => [
             0 => \User\Mapper\AbstractMapperFactory::class,
@@ -46,6 +49,7 @@ return [
         'factories' => [
             'User\\Hydrator\\UserProfile' => \User\V1\Hydrator\UserProfileHydratorFactory::class,
             'User\\Hydrator\\Room' => \User\V1\Hydrator\RoomHydratorFactory::class,
+            'User\\Hydrator\\RoomUsers' => \User\V1\Hydrator\RoomUsersHydratorFactory::class,
             'User\\Hydrator\\Vehicle' => \User\V1\Hydrator\VehicleHydratorFactory::class,
         ],
     ],
@@ -133,6 +137,15 @@ return [
                     ],
                 ],
             ],
+            'user.rest.room-users' => [
+                'type' => 'Segment',
+                'options' => [
+                    'route' => '/api/room-users[/:uuid]',
+                    'defaults' => [
+                        'controller' => 'User\\V1\\Rest\\RoomUsers\\Controller',
+                    ],
+                ],
+            ],
         ],
     ],
     'zf-versioning' => [
@@ -146,6 +159,7 @@ return [
             6 => 'user.rpc.reset-password-new-password',
             7 => 'user.rest.room',
             8 => 'user.rest.vehicle',
+            9 => 'user.rest.room-users',
         ],
     ],
     'zf-rpc' => [
@@ -195,6 +209,7 @@ return [
             'User\\V1\\Rpc\\ResetPasswordNewPassword\\Controller' => 'Json',
             'User\\V1\\Rest\\Room\\Controller' => 'HalJson',
             'User\\V1\\Rest\\Vehicle\\Controller' => 'HalJson',
+            'User\\V1\\Rest\\RoomUsers\\Controller' => 'HalJson',
         ],
         'accept_whitelist' => [
             'User\\V1\\Rpc\\Signup\\Controller' => [
@@ -229,6 +244,11 @@ return [
                 2 => 'application/json',
             ],
             'User\\V1\\Rest\\Vehicle\\Controller' => [
+                0 => 'application/vnd.user.v1+json',
+                1 => 'application/hal+json',
+                2 => 'application/json',
+            ],
+            'User\\V1\\Rest\\RoomUsers\\Controller' => [
                 0 => 'application/vnd.user.v1+json',
                 1 => 'application/hal+json',
                 2 => 'application/json',
@@ -269,6 +289,10 @@ return [
                 0 => 'application/vnd.user.v1+json',
                 1 => 'application/json',
             ],
+            'User\\V1\\Rest\\RoomUsers\\Controller' => [
+                0 => 'application/vnd.user.v1+json',
+                1 => 'application/json',
+            ],
         ],
     ],
     'zf-content-validation' => [
@@ -292,6 +316,9 @@ return [
         ],
         'User\\V1\\Rest\\Vehicle\\Controller' => [
             'input_filter' => 'User\\V1\\Rest\\Vehicle\\Validator',
+        ],
+        'User\\V1\\Rest\\RoomUsers\\Controller' => [
+            'input_filter' => 'User\\V1\\Rest\\RoomUsers\\Validator',
         ],
     ],
     'input_filter_specs' => [
@@ -681,6 +708,42 @@ return [
                 'error_message' => 'Production Year Required',
             ],
         ],
+        'User\\V1\\Rest\\RoomUsers\\Validator' => [
+            0 => [
+                'required' => true,
+                'validators' => [],
+                'filters' => [],
+                'name' => 'reservationTime',
+                'description' => 'Reservation Time',
+                'field_type' => 'String',
+                'error_message' => 'Time not valid',
+            ],
+            1 => [
+                'required' => true,
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\Uuid::class,
+                        'options' => [],
+                    ],
+                ],
+                'filters' => [],
+                'name' => 'room',
+                'description' => 'Room',
+                'field_type' => 'String',
+            ],
+            2 => [
+                'required' => true,
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\Uuid::class,
+                        'options' => [],
+                    ],
+                ],
+                'filters' => [],
+                'name' => 'userProfile',
+                'field_type' => 'String',
+            ],
+        ],
     ],
     'zf-rest' => [
         'User\\V1\\Rest\\Profile\\Controller' => [
@@ -757,6 +820,28 @@ return [
             'entity_class' => \User\Entity\Vehicle::class,
             'collection_class' => \User\V1\Rest\Vehicle\VehicleCollection::class,
             'service_name' => 'Vehicle',
+        ],
+        'User\\V1\\Rest\\RoomUsers\\Controller' => [
+            'listener' => \User\V1\Rest\RoomUsers\RoomUsersResource::class,
+            'route_name' => 'user.rest.room-users',
+            'route_identifier_name' => 'uuid',
+            'collection_name' => 'roomUsers',
+            'entity_http_methods' => [
+                0 => 'GET',
+                1 => 'PATCH',
+                2 => 'PUT',
+                3 => 'DELETE',
+            ],
+            'collection_http_methods' => [
+                0 => 'GET',
+                1 => 'POST',
+            ],
+            'collection_query_whitelist' => [],
+            'page_size' => 25,
+            'page_size_param' => 'limit',
+            'entity_class' => \User\Entity\RoomUsers::class,
+            'collection_class' => \User\V1\Rest\RoomUsers\RoomUsersCollection::class,
+            'service_name' => 'RoomUsers',
         ],
     ],
     'zf-hal' => [
@@ -839,6 +924,24 @@ return [
                 'route_identifier_name' => 'uuid',
                 'hydrator' => 'User\\Hydrator\\Vehicle',
             ],
+            'User\\V1\\Rest\\RoomUsers\\RoomUsersEntity' => [
+                'entity_identifier_name' => 'id',
+                'route_name' => 'user.rest.room-users',
+                'route_identifier_name' => 'room_users_id',
+                'hydrator' => \Zend\Hydrator\ArraySerializable::class,
+            ],
+            \User\V1\Rest\RoomUsers\RoomUsersCollection::class => [
+                'entity_identifier_name' => 'id',
+                'route_name' => 'user.rest.room-users',
+                'route_identifier_name' => 'room_users_id',
+                'is_collection' => true,
+            ],
+            \User\Entity\RoomUsers::class => [
+                'entity_identifier_name' => 'uuid',
+                'route_name' => 'user.rest.room-users',
+                'route_identifier_name' => 'uuid',
+                'hydrator' => 'User\\Hydrator\\RoomUsers',
+            ],
         ],
     ],
     'zf-mvc-auth' => [
@@ -887,6 +990,22 @@ return [
                 ],
             ],
             'User\\V1\\Rest\\Vehicle\\Controller' => [
+                'collection' => [
+                    'GET' => true,
+                    'POST' => true,
+                    'PUT' => false,
+                    'PATCH' => false,
+                    'DELETE' => false,
+                ],
+                'entity' => [
+                    'GET' => true,
+                    'POST' => false,
+                    'PUT' => false,
+                    'PATCH' => true,
+                    'DELETE' => true,
+                ],
+            ],
+            'User\\V1\\Rest\\RoomUsers\\Controller' => [
                 'collection' => [
                     'GET' => true,
                     'POST' => true,

@@ -40,6 +40,12 @@ class Module implements
         $vehicleEventListener = $serviceManager->get(\User\V1\Service\Listener\VehicleEventListener::class);
         $vehicleService = $serviceManager->get(\User\V1\Service\Vehicle::class);
         $vehicleEventListener->attach($vehicleService->getEventManager());
+
+        // Vehicle event listener
+        $roomUsersEventListener = $serviceManager->get(\User\V1\Service\Listener\RoomUsersEventListener::class);
+        $roomUsersService = $serviceManager->get(\User\V1\Service\RoomUsers::class);
+        $roomUsersEventListener->attach($roomUsersService->getEventManager());
+
         // // profile
         // $vehicleEventListener = $serviceManager->get('user.vehicle.listener');
         // $vehicleService = $serviceManager->get('user.vehicle');
