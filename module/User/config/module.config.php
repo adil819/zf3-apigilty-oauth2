@@ -34,6 +34,10 @@ return [
             \User\V1\Rest\Room\RoomResource::class => \User\V1\Rest\Room\RoomResourceFactory::class,
             \User\V1\Service\Room::class => \User\V1\Service\RoomFactory::class,
             \User\V1\Service\Listener\RoomEventListener::class => \User\V1\Service\Listener\RoomEventListenerFactory::class,
+            \User\V1\Rest\Vehicle\VehicleResource::class => \User\V1\Rest\Vehicle\VehicleResourceFactory::class,
+            \User\V1\Service\Vehicle::class => \User\V1\Service\VehicleFactory::class,
+            \User\V1\Service\Listener\VehicleEventListener::class => \User\V1\Service\Listener\VehicleEventListenerFactory::class,
+            
         ],
         'abstract_factories' => [
             0 => \User\Mapper\AbstractMapperFactory::class,
@@ -43,6 +47,7 @@ return [
         'factories' => [
             'User\\Hydrator\\UserProfile' => \User\V1\Hydrator\UserProfileHydratorFactory::class,
             'User\\Hydrator\\Room' => \User\V1\Hydrator\RoomHydratorFactory::class,
+            'User\\Hydrator\\Vehicle' => \User\V1\Hydrator\VehicleHydratorFactory::class,
         ],
     ],
     'view_manager' => [
@@ -120,6 +125,15 @@ return [
                     ],
                 ],
             ],
+            'user.rest.vehicle' => [
+                'type' => 'Segment',
+                'options' => [
+                    'route' => '/api/vehicle[/:uuid]',
+                    'defaults' => [
+                        'controller' => 'User\\V1\\Rest\\Vehicle\\Controller',
+                    ],
+                ],
+            ],
         ],
     ],
     'zf-versioning' => [
@@ -132,6 +146,7 @@ return [
             5 => 'user.rpc.reset-password-confirm-email',
             6 => 'user.rpc.reset-password-new-password',
             7 => 'user.rest.room',
+            8 => 'user.rest.vehicle',
         ],
     ],
     'zf-rpc' => [
@@ -180,6 +195,7 @@ return [
             'User\\V1\\Rpc\\ResetPasswordConfirmEmail\\Controller' => 'Json',
             'User\\V1\\Rpc\\ResetPasswordNewPassword\\Controller' => 'Json',
             'User\\V1\\Rest\\Room\\Controller' => 'HalJson',
+            'User\\V1\\Rest\\Vehicle\\Controller' => 'HalJson',
         ],
         'accept_whitelist' => [
             'User\\V1\\Rpc\\Signup\\Controller' => [
@@ -209,6 +225,11 @@ return [
                 1 => 'application/vnd.aqilix.bootstrap.v1+json',
             ],
             'User\\V1\\Rest\\Room\\Controller' => [
+                0 => 'application/vnd.user.v1+json',
+                1 => 'application/hal+json',
+                2 => 'application/json',
+            ],
+            'User\\V1\\Rest\\Vehicle\\Controller' => [
                 0 => 'application/vnd.user.v1+json',
                 1 => 'application/hal+json',
                 2 => 'application/json',
@@ -245,6 +266,10 @@ return [
                 0 => 'application/vnd.user.v1+json',
                 1 => 'application/json',
             ],
+            'User\\V1\\Rest\\Vehicle\\Controller' => [
+                0 => 'application/vnd.user.v1+json',
+                1 => 'application/json',
+            ],
         ],
     ],
     'zf-content-validation' => [
@@ -265,6 +290,9 @@ return [
         ],
         'User\\V1\\Rest\\Room\\Controller' => [
             'input_filter' => 'User\\V1\\Rest\\Room\\Validator',
+        ],
+        'User\\V1\\Rest\\Vehicle\\Controller' => [
+            'input_filter' => 'User\\V1\\Rest\\Vehicle\\Validator',
         ],
     ],
     'input_filter_specs' => [
@@ -618,6 +646,42 @@ return [
                 'error_message' => 'Name Required',
             ],
         ],
+        'User\\V1\\Rest\\Vehicle\\Validator' => [
+            0 => [
+                'required' => true,
+                'validators' => [],
+                'filters' => [
+                    0 => [
+                        'name' => \Zend\Filter\StringTrim::class,
+                        'options' => [
+                            'charlist' => '!,@,#,$,%,^,&,*,(,),-,_,+,=,|,],},{,[,:,;,:',
+                        ],
+                    ],
+                ],
+                'name' => 'brand',
+                'description' => 'Brand',
+                'field_type' => 'String',
+                'error_message' => 'Brand Required',
+            ],
+            1 => [
+                'required' => true,
+                'validators' => [],
+                'filters' => [],
+                'name' => 'wheel',
+                'description' => 'Wheel',
+                'field_type' => 'Integer',
+                'error_message' => 'Wheel Required',
+            ],
+            2 => [
+                'required' => true,
+                'validators' => [],
+                'filters' => [],
+                'name' => 'productionYear',
+                'description' => 'Production Year',
+                'field_type' => 'Integer',
+                'error_message' => 'Production Year Required',
+            ],
+        ],
     ],
     'zf-rest' => [
         'User\\V1\\Rest\\Profile\\Controller' => [
@@ -666,6 +730,32 @@ return [
             'entity_class' => \User\Entity\Room::class,
             'collection_class' => \User\V1\Rest\Room\RoomCollection::class,
             'service_name' => 'Room',
+        ],
+        'User\\V1\\Rest\\Vehicle\\Controller' => [
+            'listener' => \User\V1\Rest\Vehicle\VehicleResource::class,
+            'route_name' => 'user.rest.vehicle',
+            'route_identifier_name' => 'uuid',
+            'collection_name' => 'vehicle',
+            'entity_http_methods' => [
+                0 => 'GET',
+                1 => 'PATCH',
+                2 => 'PUT',
+                3 => 'DELETE',
+            ],
+            'collection_http_methods' => [
+                0 => 'GET',
+                1 => 'POST',
+            ],
+            'collection_query_whitelist' => [
+                0 => 'order',
+                1 => 'asc',
+                2 => 'brand',
+            ],
+            'page_size' => 25,
+            'page_size_param' => 'limit',
+            'entity_class' => \User\Entity\Vehicle::class,
+            'collection_class' => \User\V1\Rest\Vehicle\VehicleCollection::class,
+            'service_name' => 'Vehicle',
         ],
     ],
     'zf-hal' => [
@@ -730,6 +820,30 @@ return [
                 'route_identifier_name' => 'uuid',
                 'hydrator' => \Zend\Hydrator\ArraySerializable::class,
             ],
+            \User\V1\Rest\Vehicle\VehicleEntity::class => [
+                'entity_identifier_name' => 'uuid',
+                'route_name' => 'user.rest.vehicle',
+                'route_identifier_name' => 'uuid',
+                'hydrator' => 'User\\Hydrator\\Room',
+            ],
+            \User\V1\Rest\Vehicle\VehicleCollection::class => [
+                'entity_identifier_name' => 'uuid',
+                'route_name' => 'user.rest.vehicle',
+                'route_identifier_name' => 'uuid',
+                'is_collection' => true,
+            ],
+            \User\Entity\Vehicle::class => [
+                'entity_identifier_name' => 'uuid',
+                'route_name' => 'user.rest.vehicle',
+                'route_identifier_name' => 'uuid',
+                'hydrator' => 'User\\Hydrator\\Room',
+            ],
+            \User\Entity\Vehicle::class => [
+                'entity_identifier_name' => 'uuid',
+                'route_name' => 'user.rest.vehicle',
+                'route_identifier_name' => 'uuid',
+                'hydrator' => 'User\\Hydrator\\Vehicle',
+            ],
         ],
     ],
     'zf-mvc-auth' => [
@@ -762,6 +876,22 @@ return [
                 ],
             ],
             'User\\V1\\Rest\\Room\\Controller' => [
+                'collection' => [
+                    'GET' => true,
+                    'POST' => true,
+                    'PUT' => false,
+                    'PATCH' => false,
+                    'DELETE' => false,
+                ],
+                'entity' => [
+                    'GET' => true,
+                    'POST' => false,
+                    'PUT' => false,
+                    'PATCH' => true,
+                    'DELETE' => true,
+                ],
+            ],
+            'User\\V1\\Rest\\Vehicle\\Controller' => [
                 'collection' => [
                     'GET' => true,
                     'POST' => true,

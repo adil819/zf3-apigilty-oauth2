@@ -36,6 +36,15 @@ class Module implements
         $roomService = $serviceManager->get(\User\V1\Service\Room::class);
         $roomEventListener->attach($roomService->getEventManager());
 
+        // Vehicle event listener
+        $vehicleEventListener = $serviceManager->get(\User\V1\Service\Listener\VehicleEventListener::class);
+        $vehicleService = $serviceManager->get(\User\V1\Service\Vehicle::class);
+        $vehicleEventListener->attach($vehicleService->getEventManager());
+        // // profile
+        // $vehicleEventListener = $serviceManager->get('user.vehicle.listener');
+        // $vehicleService = $serviceManager->get('user.vehicle');
+        // $vehicleEventListener->attach($vehicleService->getEventManager());
+
         // reset password
         $resetPasswordService = $serviceManager->get('user.resetpassword');
         $resetPasswordEventListener = $serviceManager->get('user.resetpassword.listener');

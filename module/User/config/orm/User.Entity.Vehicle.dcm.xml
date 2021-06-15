@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
                   xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
-  <entity name="User\Entity\Room" table="room">
+  <entity name="User\Entity\Vehicle" table="vehicle">
     <id name="uuid" type="string" column="uuid" length="36">
       <generator strategy="UUID"/>
     </id>
-    <field name="name" type="string" column="name" length="128" nullable="true">
+    <field name="brand" type="string" column="brand" length="50" nullable="true">
       <options>
         <option name="fixed"/>
       </options>
     </field>
-    <field name="capacity" type="integer" column="capacity" length="6" nullable="true">
-    <!-- <field name="capacity" type="integer" column="capacity" length="6" nullable="true"> -->
-      <!-- <options>
-        <option name="fixed"/>
-      </options> -->
+    <field name="wheel" type="integer" column="wheel" length="4" nullable="true">
+    </field>
+    <field name="productionYear" type="integer" column="production_year" length="4" nullable="true">
     </field>
     <field name="createdAt" type="datetime" column="created_at"  nullable="true">
       <gedmo:timestampable on="create"/>
