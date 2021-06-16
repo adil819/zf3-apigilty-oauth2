@@ -91,40 +91,41 @@ class RoomUsers
         }
     }
     
-    // public function update(RoomUsersEntity $roomusers, ZendInputFilter $newData){
-    //     $roomUsersEvent = new RoomUsersEvent();
-    //     $roomUsersEvent->setInputFilter($newData);
-    //     $roomUsersEvent->setUpdateData($newData->getValues());
-    //     $roomUsersEvent->setRoomUsersEntity($roomusers);
-    //     $roomUsersEvent->setName(RoomUsersEvent::EVENT_UPDATE_ROOM_USERS);
-    //     $create = $this->getEventManager()->triggerEvent($roomUsersEvent); 
-    //     if ($create->stopped()){
-    //         $roomUsersEvent->setName(RoomUsersEvent::EVENT_UPDATE_ROOM_USERS_ERROR);
-    //         $roomUsersEvent->setException($create->last());
-    //         $this->getEventManager()->triggerEvent($roomUsersEvent);
-    //         throw $roomUsersEvent->getException();
-    //     } else {
-    //         $roomUsersEvent->setName(RoomUsersEvent::EVENT_UPDATE_ROOM_USERS_SUCCESS);
-    //         $this->getEventManager()->triggerEvent($roomUsersEvent);
-    //         return $roomUsersEvent->getRoomUsersEntity();
-    //     }
-    // }
+    public function update(RoomUsersEntity $roomUsers, ZendInputFilter $newData){
+        $roomUsersEvent = new RoomUsersEvent();
+        $roomUsersEvent->setInputFilter($newData);
+        $roomUsersEvent->setUpdateData($newData->getValues());
+        $roomUsersEvent->setRoomUsersEntity($roomUsers);
+        $roomUsersEvent->setName(RoomUsersEvent::EVENT_UPDATE_ROOMUSERS);
+        $update = $this->getEventManager()->triggerEvent($roomUsersEvent); 
+        if ($update->stopped()){
+            $roomUsersEvent->setName(RoomUsersEvent::EVENT_UPDATE_ROOMUSERS_ERROR);
+            $roomUsersEvent->setException($update->last());
+            $this->getEventManager()->triggerEvent($roomUsersEvent);
+            throw $roomUsersEvent->getException();
+        } else {
+            // var_dump($roomUsersEvent);
+            $roomUsersEvent->setName(RoomUsersEvent::EVENT_UPDATE_ROOMUSERS_SUCCESS);
+            $this->getEventManager()->triggerEvent($roomUsersEvent);
+            return $roomUsersEvent->getRoomUsersEntity();
+        }
+    }
 
-    // public function delete(RoomUsersEntity $roomusers){
-    //     $roomUsersEvent = new RoomUsersEvent();
-    //     $roomUsersEvent->setRoomUsersEntity($roomusers);
-    //     $roomUsersEvent->setName(RoomUsersEvent::EVENT_DELETE_ROOM_USERS);
-    //     $delete = $this->getEventManager()->triggerEvent($roomUsersEvent);
-    //     if ($delete->stopped()){
-    //         $roomUsersEvent->setName(RoomUsersEvent::EVENT_DELETE_ROOM_USERS_ERROR);
-    //         $roomUsersEvent->setException($delete->last());
-    //         $this->getEventManager()->triggerEvent($roomUsersEvent);
-    //         throw $roomUsersEvent->getException();
-    //     } else {
-    //         $roomUsersEvent->setName(RoomUsersEvent::EVENT_DELETE_ROOM_USERS_SUCCESS);
-    //         $this->getEventManager()->triggerEvent($roomUsersEvent);
-    //         // return $roomUsersEvent->getRoomUsersEntity();
-    //         return true;  // => DISINI BEDANYA KALAU DELETE
-    //     }
-    // }
+    public function delete(RoomUsersEntity $roomUsers){
+        $roomUsersEvent = new RoomUsersEvent();
+        $roomUsersEvent->setRoomUsersEntity($roomUsers);
+        $roomUsersEvent->setName(RoomUsersEvent::EVENT_DELETE_ROOMUSERS);
+        $delete = $this->getEventManager()->triggerEvent($roomUsersEvent);
+        if ($delete->stopped()){
+            $roomUsersEvent->setName(RoomUsersEvent::EVENT_DELETE_ROOMUSERS_ERROR);
+            $roomUsersEvent->setException($delete->last());
+            $this->getEventManager()->triggerEvent($roomUsersEvent);
+            throw $roomUsersEvent->getException();
+        } else {
+            $roomUsersEvent->setName(RoomUsersEvent::EVENT_DELETE_ROOMUSERS_SUCCESS);
+            $this->getEventManager()->triggerEvent($roomUsersEvent);
+            // return $roomUsersEvent->getRoomUsersEntity();
+            return true;  // => DISINI BEDANYA KALAU DELETE
+        }
+    }
 }

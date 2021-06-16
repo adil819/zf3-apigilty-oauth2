@@ -23,8 +23,12 @@ class RoomUsersHydratorFactory implements FactoryInterface
     {
         $entityManager = $container->get('doctrine.entitymanager.orm_default');
         $hydrator = new DoctrineObject($entityManager);
+        $hydrator->addStrategy('reservationTime', new DateTimeFormatterStrategy('c'));
         $hydrator->addStrategy('createdAt', new DateTimeFormatterStrategy('c'));
         $hydrator->addStrategy('updatedAt', new DateTimeFormatterStrategy('c'));
+        // $hydrator->addStrategy('account', new \User\V1\Hydrator\Strategy\AccountStrategy);
+        $hydrator->addStrategy('room', new \User\V1\Hydrator\Strategy\RoomStrategy);
+        $hydrator->addStrategy('userProfile', new \User\V1\Hydrator\Strategy\UserProfileStrategy);
         $hydrator->addFilter('exclude', function ($property) {
             if (in_array($property, ['deletedAt'])) {
                 return false;

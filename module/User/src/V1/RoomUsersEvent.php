@@ -12,10 +12,10 @@ class RoomUsersEvent extends Event
     /**#@+
      * RoomUsers events triggered by eventmanager
      */
-    // # UPDATE DITIRU DARI PROFILE
-    // const EVENT_UPDATE_ROOM_USERS  = 'update.room.users';
-    // const EVENT_UPDATE_ROOM_USERS_ERROR   = 'update.room.users.error';
-    // const EVENT_UPDATE_ROOM_USERS_SUCCESS = 'update.room.users.success';
+    # UPDATE DITIRU DARI PROFILE
+    const EVENT_UPDATE_ROOMUSERS  = 'update.roomusers';
+    const EVENT_UPDATE_ROOMUSERS_ERROR   = 'update.roomusers.error';
+    const EVENT_UPDATE_ROOMUSERS_SUCCESS = 'update.roomusers.success';
 
     // #INSERT DITIRU DARI SIGNUP
     // const EVENT_INSERT_ROOM_USERS  = 'insert.room.users';
@@ -27,10 +27,10 @@ class RoomUsersEvent extends Event
     const EVENT_CREATE_ROOMUSERS_ERROR   = 'create.roomusers.error';
     const EVENT_CREATE_ROOMUSERS_SUCCESS = 'create.roomusers.success';
 
-    // #DELETE BUAT SENDIRI TANPA CONTEK DENGAN MENGINGAT ALUR NYA
-    // const EVENT_DELETE_ROOM_USERS = 'delete.room.users';
-    // const EVENT_DELETE_ROOM_USERS_ERROR = 'delete.room.users.error';
-    // const EVENT_DELETE_ROOM_USERS_SUCCESS = 'delete.room.users.success';
+    #DELETE BUAT SENDIRI TANPA CONTEK DENGAN MENGINGAT ALUR NYA
+    const EVENT_DELETE_ROOMUSERS = 'delete.roomusers';
+    const EVENT_DELETE_ROOMUSERS_ERROR = 'delete.roomusers.error';
+    const EVENT_DELETE_ROOMUSERS_SUCCESS = 'delete.roomusers.success';
 
     /**#@-*/
 

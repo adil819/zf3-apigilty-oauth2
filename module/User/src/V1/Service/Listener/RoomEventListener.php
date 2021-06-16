@@ -117,11 +117,10 @@ class RoomEventListener implements ListenerAggregateInterface
             $event->setRoomEntity($room);
             $this->logger->log(
                 \Psr\Log\LogLevel::INFO,
-                "{function} room: {id} updated, capacity: {caps}",
+                "{function} room: {id} updated",
                 [
                     "function" => __FUNCTION__,
-                    "id" => $roomEntity->getUuid(),
-                    "caps" => $roomEntity->getCapacity()
+                    "id" => $roomEntity->getUuid()
                 ]
             );
         } catch (\Exception $e) {

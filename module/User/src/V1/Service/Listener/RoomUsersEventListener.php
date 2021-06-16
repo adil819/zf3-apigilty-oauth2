@@ -42,17 +42,17 @@ class RoomUsersEventListener implements ListenerAggregateInterface
             499
         );
 
-        // $this->listeners[] = $events->attach(
-        //     RoomUsersEvent::EVENT_UPDATE_ROOM_USERS,
-        //     [$this, 'updateRoom'],
-        //     499
-        // );
+        $this->listeners[] = $events->attach(
+            RoomUsersEvent::EVENT_UPDATE_ROOMUSERS,
+            [$this, 'updateRoom'],
+            499
+        );
 
-        // $this->listeners[] = $events->attach(
-        //     RoomUsersEvent::EVENT_DELETE_ROOM_USERS,
-        //     [$this, 'deleteRoom'],
-        //     499
-        // );
+        $this->listeners[] = $events->attach(
+            RoomUsersEvent::EVENT_DELETE_ROOMUSERS,
+            [$this, 'deleteRoom'],
+            499
+        );
     }
     
     # DITIRU DARI CREATEDEVICE()
@@ -88,61 +88,61 @@ class RoomUsersEventListener implements ListenerAggregateInterface
      * @param  SignupEvent $event
      * @return void|\Exception
      */
-    // public function updateRoom(RoomEvent $event)
-    // {
-    //     try {
-    //         $roomEntity = $event->getRoomEntity();
-    //         $updateData  = $event->getUpdateData();
-    //         // add file input filter here
-    //         if (! $event->getInputFilter() instanceof InputFilterInterface) {
-    //             throw new InvalidArgumentException('Input Filter not set');
-    //         }
+    public function updateRoom(RoomUsersEvent $event)
+    {
+        try {
+            $roomUsersEntity = $event->getRoomUsersEntity();
+            $updateData  = $event->getUpdateData();
+            // add file input filter here
+            if (! $event->getInputFilter() instanceof InputFilterInterface) {
+                throw new InvalidArgumentException('Input Filter not set');
+            }
 
-    //         // adding filter for photo
-    //         // $inputPhoto  = $event->getInputFilter()->get('photo');
-    //         // $inputPhoto->getFilterChain()
-    //         //         ->attach(new \Zend\Filter\File\RenameUpload([
-    //         //             'target' => $this->getConfig()['backup_dir'],
-    //         //             'randomize' => true,
-    //         //             'use_upload_extension' => true
-    //         //         ]));
-    //         $room = $this->getRoomHydrator()->hydrate($updateData, $roomEntity);
-    //         $this->getRoomMapper()->save($room);
-    //         $event->setRoomEntity($room);
-    //         $this->logger->log(
-    //             \Psr\Log\LogLevel::INFO,
-    //             "{function} room: {id} updated, capacity: {caps}",
-    //             [
-    //                 "function" => __FUNCTION__,
-    //                 "id" => $roomEntity->getUuid(),
-    //                 "caps" => $roomEntity->getCapacity()
-    //             ]
-    //         );
-    //     } catch (\Exception $e) {
-    //         $event->stopPropagation(true);
-    //         return $e;
-    //     }
-    // }
+            // adding filter for photo
+            // $inputPhoto  = $event->getInputFilter()->get('photo');
+            // $inputPhoto->getFilterChain()
+            //         ->attach(new \Zend\Filter\File\RenameUpload([
+            //             'target' => $this->getConfig()['backup_dir'],
+            //             'randomize' => true,
+            //             'use_upload_extension' => true
+            //         ]));
+            $roomUsers = $this->getRoomUsersHydrator()->hydrate($updateData, $roomUsersEntity);
+            $result = $this->getRoomUsersMapper()->save($roomUsers);
+            $event->setRoomUsersEntity($roomUsers);
+            $uuid = $result->getUuid();
+            $this->logger->log(
+                \Psr\Log\LogLevel::INFO,
+                "{function} room: {uuid} updated",
+                [
+                    'uuid' => $uuid,
+                    "function" => __FUNCTION__
+                ]
+            );
+        } catch (\Exception $e) {
+            $event->stopPropagation(true);
+            return $e;
+        }
+    }
 
-    // public function deleteRoom(RoomEvent $event)
-    // {
-    //     try {
-    //         $deletedData = $event->getRoomEntity();
-    //         $this->getRoomMapper()->delete($deletedData);
-    //         $uuid = $deletedData->getUuid();
+    public function deleteRoom(RoomUsersEvent $event)
+    {
+        try {
+            $deletedData = $event->getRoomUsersEntity();
+            $this->getRoomUsersMapper()->delete($deletedData);
+            $uuid = $deletedData->getUuid();
 
-    //         $this->logger->log(
-    //             \Psr\Log\LogLevel::INFO,
-    //             "{function} {uuid}: Data deleted successfully",
-    //             [
-    //                 'uuid' => $uuid,
-    //                 "function" => __FUNCTION__
-    //             ]
-    //         );
-    //     } catch (\Exception $e) {
-    //         $this->logger->log(\Psr\Log\LogLevel::ERROR, "{function} : Something Error! \nError_message: ".$e->getMessage(), ["function" => __FUNCTION__]);
-    //     }
-    // }
+            $this->logger->log(
+                \Psr\Log\LogLevel::INFO,
+                "{function} {uuid}: Data deleted successfully",
+                [
+                    'uuid' => $uuid,
+                    "function" => __FUNCTION__
+                ]
+            );
+        } catch (\Exception $e) {
+            $this->logger->log(\Psr\Log\LogLevel::ERROR, "{function} : Something Error! \nError_message: ".$e->getMessage(), ["function" => __FUNCTION__]);
+        }
+    }
 
     /**
      * @return the $config

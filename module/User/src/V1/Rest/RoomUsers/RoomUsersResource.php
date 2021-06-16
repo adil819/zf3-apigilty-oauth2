@@ -45,6 +45,32 @@ class RoomUsersResource extends AbstractResourceListener
     }
 
     /**
+     *  Patch (partian in-place update) a resource
+     * 
+     * @param mixed $id
+     * @param mixed $data
+     * @return ApiProblem|mixed
+     */
+    public function patch($id, $data){
+        // var_dump("Yeyy coba dulu");
+        $roomUsers = $this->getRoomUsersMapper()->fetchOneBy(['uuid' => $id]);
+        if (is_null($roomUsers)){
+            return new ApiProblem(404, "Room Users Not Found");
+        }
+        // var_dump($roomUsers);
+        $inputFilter = $this->getInputFilter()->getValues();
+
+        try{
+            // $roomUsers = $this->getRoomUsersService()->update($roomUsers, $this->getInputFilter());
+            $roomUsers = $this->getRoomUsersService()->update($roomUsers, $this->getInputFilter());
+            return $roomUsers;
+        } catch (RuntimeException $e){
+            return new ApiProblemResponse(new ApiProblem(500, $e->getMessage()));
+        }
+        
+    }
+
+    /**
      * Delete a resource
      *
      * @param  mixed $id
@@ -52,7 +78,14 @@ class RoomUsersResource extends AbstractResourceListener
      */
     public function delete($id)
     {
-        return new ApiProblem(405, 'The DELETE method has not been defined for individual resources');
+        // return new ApiProblem(405, 'The DELETE method has not been defined for individual resources');
+        $roomUsers = $this->getRoomUsersMapper()->fetchOneBy(['uuid' => $id]);
+        if (is_null($roomUsers)){
+            return new ApiProblem(404, "Room Users Not Found KENAPAAA");
+        }
+        $inputFilter = $this->getInputFilter();
+
+        return $this->getRoomUsersService()->delete($roomUsers);
     }
 
     /**
@@ -93,18 +126,6 @@ class RoomUsersResource extends AbstractResourceListener
         $paginatorAdapter = $this->getRoomUsersMapper()->buildListPaginatorAdapter($queryParams, $order, $asc);
         return new ZendPaginator($paginatorAdapter);
 
-    }
-
-    /**
-     * Patch (partial in-place update) a resource
-     *
-     * @param  mixed $id
-     * @param  mixed $data
-     * @return ApiProblem|mixed
-     */
-    public function patch($id, $data)
-    {
-        return new ApiProblem(405, 'The PATCH method has not been defined for individual resources');
     }
 
     /**

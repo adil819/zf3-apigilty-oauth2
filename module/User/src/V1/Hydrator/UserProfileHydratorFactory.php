@@ -28,6 +28,9 @@ class UserProfileHydratorFactory implements FactoryInterface
         $hydrator->addStrategy('createdAt', new DateTimeFormatterStrategy('c'));
         $hydrator->addStrategy('updatedAt', new DateTimeFormatterStrategy('c'));
         $hydrator->addStrategy('photo', $container->get('user.hydrator.photo.strategy'));
+        // $hydrator->addStrategy('account', new \User\V1\Hydrator\Strategy\AccountStrategy);
+        // $hydrator->addStrategy('room', new \User\V1\Hydrator\Strategy\RoomStrategy);
+        // $hydrator->addStrategy('userProfile', new \User\V1\Hydrator\Strategy\UserProfileStrategy);
         $hydrator->addFilter('exclude', function ($property) {
             if (in_array($property, ['deletedAt', 'userActivation'])) {
                 return false;
