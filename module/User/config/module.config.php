@@ -8,6 +8,7 @@ return [
             \User\V1\Console\Controller\EmailController::class => \User\V1\Console\Controller\EmailControllerFactory::class,
             'User\\V1\\Rpc\\ResetPasswordConfirmEmail\\Controller' => \User\V1\Rpc\ResetPasswordConfirmEmail\ResetPasswordConfirmEmailControllerFactory::class,
             'User\\V1\\Rpc\\ResetPasswordNewPassword\\Controller' => \User\V1\Rpc\ResetPasswordNewPassword\ResetPasswordNewPasswordControllerFactory::class,
+            'User\\V1\\Rpc\\UserRoomStats\\Controller' => \User\V1\Rpc\UserRoomStats\UserRoomStatsControllerFactory::class,
         ],
     ],
     'service_manager' => [
@@ -159,6 +160,16 @@ return [
                     ],
                 ],
             ],
+            'user.rpc.user-room-stats' => [
+                'type' => 'Segment',
+                'options' => [
+                    'route' => '/api/user-room-stats',
+                    'defaults' => [
+                        'controller' => 'User\\V1\\Rpc\\UserRoomStats\\Controller',
+                        'action' => 'userRoomStats',
+                    ],
+                ],
+            ],
         ],
     ],
     'zf-versioning' => [
@@ -174,6 +185,8 @@ return [
             8 => 'user.rest.vehicle',
             9 => 'user.rest.room-users',
             10 => 'user.rest.vehicle-users',
+            11 => 'user.rpc.user-room-stats',
+            12 => 'user.rpc.user-room-stats',
         ],
     ],
     'zf-rpc' => [
@@ -212,6 +225,20 @@ return [
             ],
             'route_name' => 'user.rpc.reset-password-new-password',
         ],
+        '' => [
+            'service_name' => 'UserRoomStats',
+            'http_methods' => [
+                0 => 'GET',
+            ],
+            'route_name' => 'user.rpc.user-room-stats',
+        ],
+        'User\\V1\\Rpc\\UserRoomStats\\Controller' => [
+            'service_name' => 'UserRoomStats',
+            'http_methods' => [
+                0 => 'GET',
+            ],
+            'route_name' => 'user.rpc.user-room-stats',
+        ],
     ],
     'zf-content-negotiation' => [
         'controllers' => [
@@ -225,6 +252,8 @@ return [
             'User\\V1\\Rest\\Vehicle\\Controller' => 'HalJson',
             'User\\V1\\Rest\\RoomUsers\\Controller' => 'HalJson',
             'User\\V1\\Rest\\VehicleUsers\\Controller' => 'HalJson',
+            '' => 'Json',
+            'User\\V1\\Rpc\\UserRoomStats\\Controller' => 'Json',
         ],
         'accept_whitelist' => [
             'User\\V1\\Rpc\\Signup\\Controller' => [
@@ -273,6 +302,16 @@ return [
                 1 => 'application/hal+json',
                 2 => 'application/json',
             ],
+            '' => [
+                0 => 'application/vnd.user.v1+json',
+                1 => 'application/json',
+                2 => 'application/*+json',
+            ],
+            'User\\V1\\Rpc\\UserRoomStats\\Controller' => [
+                0 => 'application/vnd.user.v1+json',
+                1 => 'application/json',
+                2 => 'application/*+json',
+            ],
         ],
         'content_type_whitelist' => [
             'User\\V1\\Rpc\\Signup\\Controller' => [
@@ -314,6 +353,14 @@ return [
                 1 => 'application/json',
             ],
             'User\\V1\\Rest\\VehicleUsers\\Controller' => [
+                0 => 'application/vnd.user.v1+json',
+                1 => 'application/json',
+            ],
+            '' => [
+                0 => 'application/vnd.user.v1+json',
+                1 => 'application/json',
+            ],
+            'User\\V1\\Rpc\\UserRoomStats\\Controller' => [
                 0 => 'application/vnd.user.v1+json',
                 1 => 'application/json',
             ],
@@ -1134,6 +1181,17 @@ return [
                     'PUT' => false,
                     'PATCH' => true,
                     'DELETE' => true,
+                ],
+            ],
+            'User\\V1\\Rpc\\UserRoomStats\\Controller' => [
+                'actions' => [
+                    'UserRoomStats' => [
+                        'GET' => true,
+                        'POST' => false,
+                        'PUT' => false,
+                        'PATCH' => false,
+                        'DELETE' => false,
+                    ],
                 ],
             ],
         ],

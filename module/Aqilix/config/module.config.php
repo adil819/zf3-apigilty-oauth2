@@ -31,6 +31,17 @@ return [
                     ]
                 ]
             ]
+        ],
+        "logger_room" => [
+            "writers" => [
+                [
+                    "name" => "room",
+                    "priority" => Logger::DEBUG,
+                    "options" => [
+                        'room' => 'data/log/room.log',
+                    ]
+                ]
+            ]
         ]
     ]
 ];

@@ -45,7 +45,7 @@ class Room extends AbstractMapper implements MapperInterface
         $query = $qb->getQuery();
         $query->useQueryCache(true);
         $query->useResultCache(true, 600);
-        $query->orderBy('r.name', 'ASC');
+        // $query->orderBy('r.name', 'ASC');
 
         // $result = $query->getResult();
         // return $result;

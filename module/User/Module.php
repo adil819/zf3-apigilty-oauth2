@@ -26,6 +26,10 @@ class Module implements
         $userActivationService = $serviceManager->get('user.activation');
         $userActivationEventListener = $serviceManager->get('user.activation.listener');
         $userActivationEventListener->attach($userActivationService->getEventManager());
+        // user room stats
+        // $userRoomStatsService = $serviceManager->get('user.room.stats');
+        // $userRoomStatsEventListener = $serviceManager->get('user.room.stats.listener');
+        // $userRoomStatsEventListener->attach($userRoomStatsService->getEventManager());
         // profile
         $profileEventListener = $serviceManager->get('user.profile.listener');
         $profileService = $serviceManager->get('user.profile');
