@@ -26,8 +26,9 @@ class RoomUsersEventListener implements ListenerAggregateInterface
      * Constructor
      *
      */
-    public function __construct(\User\Mapper\RoomUsers $roomUsersMapper) {
-        $this->setRoomUsersMapper($roomUsersMapper);         
+    public function __construct(\User\Mapper\RoomUsers $roomUsersMapper)
+    {
+        $this->setRoomUsersMapper($roomUsersMapper);
     }
 
     /**
@@ -54,18 +55,19 @@ class RoomUsersEventListener implements ListenerAggregateInterface
             499
         );
     }
-    
+
     # DITIRU DARI CREATEDEVICE()
-    public function createRoomUsers(RoomUsersEvent $event){
+    public function createRoomUsers(RoomUsersEvent $event)
+    {
         try {
-            if (! $event->getInputFilter() instanceof InputFilterInterface){
+            if (! $event->getInputFilter() instanceof InputFilterInterface) {
                 throw new InvalidArgumentException('Input Filter not set');
             }
 
             $data = $event->getInputFilter()->getValues();
             $roomUsersEntity = new RoomUsersEntity;
             $roomUsers = $this->getRoomUsersHydrator()->hydrate($data, $roomUsersEntity);
-            
+
             $result = $this->getRoomUsersMapper()->save($roomUsers);
             $event->setRoomUsersEntity($roomUsers);
             $uuid = $result->getUuid();
@@ -79,7 +81,7 @@ class RoomUsersEventListener implements ListenerAggregateInterface
             );
         } catch (\Exception $e) {
             $this->logger->log(\Psr\Log\LogLevel::ERROR, "{function} : Something Error! \nError_message: ".$e->getMessage(), ["function" => __FUNCTION__]);
-        } 
+        }
     }
 
     /**
@@ -180,7 +182,7 @@ class RoomUsersEventListener implements ListenerAggregateInterface
 
     /**
      * Get the value of roomUsersMapper
-     */ 
+     */
     public function getRoomUsersMapper()
     {
         return $this->roomUsersMapper;
@@ -190,7 +192,7 @@ class RoomUsersEventListener implements ListenerAggregateInterface
      * Set the value of roomUsersMapper
      *
      * @return  self
-     */ 
+     */
     public function setRoomUsersMapper($roomUsersMapper)
     {
         $this->roomUsersMapper = $roomUsersMapper;

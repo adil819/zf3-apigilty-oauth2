@@ -10,14 +10,14 @@ use Aqilix\ORM\Mapper\MapperInterface;
  *
  * room Mapper
  */
-class RoomUsers extends AbstractMapper implements MapperInterface
+class VehicleUsers extends AbstractMapper implements MapperInterface
 {
     /**
      * Get Entity Repository
      */
     public function getEntityRepository()
     {
-        return $this->getEntityManager()->getRepository('User\\Entity\\RoomUsers');
+        return $this->getEntityManager()->getRepository('User\\Entity\\VehicleUsers');
     }
 
     public function fetchAll(array $params = [], $order = null, $asc = false)

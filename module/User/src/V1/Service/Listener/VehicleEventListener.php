@@ -33,7 +33,7 @@ class VehicleEventListener implements ListenerAggregateInterface
     public function __construct(
         VehicleMapper $vehicleMapper
     ) {
-        $this->setVehicleMapper($vehicleMapper); 
+        $this->setVehicleMapper($vehicleMapper);
     }
 
     /**
@@ -60,18 +60,19 @@ class VehicleEventListener implements ListenerAggregateInterface
             499
         );
     }
-    
+
     # DITIRU DARI CREATEDEVICE()
-    public function createVehicle(VehicleEvent $event){
+    public function createVehicle(VehicleEvent $event)
+    {
         try {
-            if (! $event->getInputFilter() instanceof InputFilterInterface){
+            if (! $event->getInputFilter() instanceof InputFilterInterface) {
                 throw new InvalidArgumentException('Input Filter not set');
             }
 
             $data = $event->getInputFilter()->getValues();
             $vehicleEntity = new VehicleEntity;
             $vehicle = $this->getVehicleHydrator()->hydrate($data, $vehicleEntity);
-            
+
             $result = $this->getVehicleMapper()->save($vehicle);
             $event->setVehicleEntity($vehicle);
             $uuid = $result->getUuid();
@@ -85,7 +86,7 @@ class VehicleEventListener implements ListenerAggregateInterface
             );
         } catch (\Exception $e) {
             $this->logger->log(\Psr\Log\LogLevel::ERROR, "{function} : Something Error! \nError_message: ".$e->getMessage(), ["function" => __FUNCTION__]);
-        } 
+        }
     }
 
     /**
@@ -154,7 +155,7 @@ class VehicleEventListener implements ListenerAggregateInterface
     // {
     //     try {
     //         $vehicleEntity = $event->getVehicleEntity();
-  
+
     //         $vehicle = $this->getVehicleHydrator()->hydrate($vehicleEntity);
     //         $this->getVehicleMapper()->save($vehicle);
     //         $event->setVehicleEntity($vehicle);
@@ -220,6 +221,4 @@ class VehicleEventListener implements ListenerAggregateInterface
     {
         $this->vehicleHydrator = $vehicleHydrator;
     }
-
-
 }

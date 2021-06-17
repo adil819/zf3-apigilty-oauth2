@@ -73,7 +73,7 @@ class ProfileResource extends AbstractResourceListener
         return $userProfile;
     }
 
-    /** 
+    /**
      * Fetch all or a subset of resources
      *
      * @param  array $params
@@ -84,7 +84,7 @@ class ProfileResource extends AbstractResourceListener
     public function fetchAll($params = [])
     {
         $queryParams = [];
-        $qb = $this->getUserProfileMapper()->fetchAll($queryParams);  
+        $qb = $this->getUserProfileMapper()->fetchAll($queryParams);
         //return $qb;  // INI RETURN TANPA PAGINATION
 
         // FUNGSI createPaginatorAdapter DARI BAWAAN BANG HAKIMx
@@ -93,7 +93,7 @@ class ProfileResource extends AbstractResourceListener
         return new ZendPaginator($paginatorAdapter);
 
         // $paginatorAdapter = $this->getUserProfileMapper()->buildListPaginatorAdapter($queryParams, $order, $asc);
-        // return new ZendPaginator($paginatorAdapter);  
+        // return new ZendPaginator($paginatorAdapter);
     }
 
     // INI FUNGSI fetchAll full dari Bang Hakim
@@ -126,7 +126,7 @@ class ProfileResource extends AbstractResourceListener
 
     //     // $queryParams = array_merge($queryParams, $urlParams);
     //     $queryParams = [];
-    //     $qb = $this->getUserProfileMapper()->fetchAll($queryParams, $order, $asc);  
+    //     $qb = $this->getUserProfileMapper()->fetchAll($queryParams, $order, $asc);
     //     return $qb; // INI RETURN TANPA PAGINATION
 
     //     //$paginatorAdapter = $this->getUserProfileMapper()->createPaginatorAdapter($qb);

@@ -7,9 +7,9 @@ use Gedmo\Timestampable\Traits\Timestampable as TimestampableTrait;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteable as SoftDeleteableTrait;
 
 /**
- * RoomUsers
+ * VehicleUsers
  */
-class RoomUsers implements EntityInterface
+class VehicleUsers implements EntityInterface
 {
     use TimestampableTrait;
 
@@ -21,9 +21,9 @@ class RoomUsers implements EntityInterface
     private $uuid;
 
     /**
-     * @var \User\Entity\Room
+     * @var \User\Entity\Vehicle
      */
-    private $room;
+    private $vehicle;
 
     /**
      * @var \User\Entity\UserProfile
@@ -33,7 +33,7 @@ class RoomUsers implements EntityInterface
     /**
      * @var DateTime
      */
-    private $reservationTime;
+    private $bookingDay;
 
     /**
      * @var boolean
@@ -65,43 +65,43 @@ class RoomUsers implements EntityInterface
     }
 
     /**
-     * Get the value of reservationTime
+     * Get the value of bookingDay
      */
-    public function getReservationTime()
+    public function getBookingDay()
     {
-        return $this->reservationTime;
+        return $this->bookingDay;
     }
 
     /**
-     * Set the value of reservationTime
+     * Set the value of bookingDay
      */
-    public function setReservationTime($reservationTime): self
+    public function setBookingDay($bookingDay): self
     {
-        $this->reservationTime = $reservationTime;
+        $this->bookingDay = $bookingDay;
 
         return $this;
     }
 
     /**
-     * Get the value of room
+     * Get the value of vehicle
      *
-     * @return  \User\Entity\Room
+     * @return  \User\Entity\Vehicle
      */
-    public function getRoom()
+    public function getVehicle()
     {
-        return $this->room;
+        return $this->vehicle;
     }
 
     /**
-     * Set the value of room
+     * Set the value of vehicle
      *
-     * @param  \User\Entity\Room  $room
+     * @param  \User\Entity\Vehicle  $vehicle
      *
      * @return  self
      */
-    public function setRoom(\User\Entity\Room $room)
+    public function setVehicle(\User\Entity\Vehicle $vehicle)
     {
-        $this->room = $room;
+        $this->vehicle = $vehicle;
 
         return $this;
     }

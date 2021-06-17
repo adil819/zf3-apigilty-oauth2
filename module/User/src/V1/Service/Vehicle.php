@@ -92,12 +92,14 @@ class Vehicle
     //     }
     // }
 
-    public function save(ZendInputFilter $inputFilter) {   // DITIRU DARI DEVICE
+    public function save(ZendInputFilter $inputFilter)
+    {
+   // DITIRU DARI DEVICE
         $vehicleEvent = new VehicleEvent();
         $vehicleEvent->setInputFilter($inputFilter);
         $vehicleEvent->setName(VehicleEvent::EVENT_CREATE_VEHICLE);
         $create = $this->getEventManager()->triggerEvent($vehicleEvent);
-        if ($create->stopped()){
+        if ($create->stopped()) {
             $vehicleEvent->setName(VehicleEvent::EVENT_CREATE_VEHICLE_ERROR);
             $vehicleEvent->setException($create->last());
             $this->getEventManager()->triggerEvent($vehicleEvent);
@@ -108,15 +110,16 @@ class Vehicle
             return $vehicleEvent->getVehicleEntity();
         }
     }
-    
-    public function update(VehicleEntity $vehicle, ZendInputFilter $newData){
+
+    public function update(VehicleEntity $vehicle, ZendInputFilter $newData)
+    {
         $vehicleEvent = new VehicleEvent();
         $vehicleEvent->setInputFilter($newData);
         $vehicleEvent->setUpdateData($newData->getValues());
         $vehicleEvent->setVehicleEntity($vehicle);
         $vehicleEvent->setName(VehicleEvent::EVENT_UPDATE_VEHICLE);
-        $create = $this->getEventManager()->triggerEvent($vehicleEvent); 
-        if ($create->stopped()){
+        $create = $this->getEventManager()->triggerEvent($vehicleEvent);
+        if ($create->stopped()) {
             $vehicleEvent->setName(VehicleEvent::EVENT_UPDATE_VEHICLE_ERROR);
             $vehicleEvent->setException($create->last());
             $this->getEventManager()->triggerEvent($vehicleEvent);
@@ -128,12 +131,13 @@ class Vehicle
         }
     }
 
-    public function delete(VehicleEntity $vehicle){
+    public function delete(VehicleEntity $vehicle)
+    {
         $vehicleEvent = new VehicleEvent();
         $vehicleEvent->setVehicleEntity($vehicle);
         $vehicleEvent->setName(VehicleEvent::EVENT_DELETE_VEHICLE);
         $delete = $this->getEventManager()->triggerEvent($vehicleEvent);
-        if ($delete->stopped()){
+        if ($delete->stopped()) {
             $vehicleEvent->setName(VehicleEvent::EVENT_DELETE_VEHICLE_ERROR);
             $vehicleEvent->setException($delete->last());
             $this->getEventManager()->triggerEvent($vehicleEvent);

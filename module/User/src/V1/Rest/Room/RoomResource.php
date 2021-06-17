@@ -31,16 +31,16 @@ class RoomResource extends AbstractResourceListener
     public function create($data)
     {
         // var_dump("tes aja dlu, hbis ni diapus");exit();
-        try{
+        try {
             $inputFilter = $this->getInputFilter();
             // $roomUuid = $inputFilter->getValue('uuid');
             // $room = $this->getRoomMapper()->fetchOneBy(['uuid' => $roomUuid]);
             // if(! is_null($room)){
             //     return new ApiProblem(422, "Room with uuid ".$roomUuid."already exist!");
             // }
-            
+
             $room = $this->getRoomService()->save($inputFilter);
-        } catch (RuntimeException $e){
+        } catch (RuntimeException $e) {
             return new ApiProblem(500, $e->getMessage());
         }
         return $room;
@@ -82,7 +82,7 @@ class RoomResource extends AbstractResourceListener
     {
         // return new ApiProblem(405, 'The DELETE method has not been defined for individual resources');
         $room = $this->getRoomMapper()->fetchOneBy(['uuid' => $id]);
-        if (is_null($room)){
+        if (is_null($room)) {
             return new ApiProblem(404, "Room Not Found KENAPAAA");
         }
         $inputFilter = $this->getInputFilter();
@@ -128,7 +128,7 @@ class RoomResource extends AbstractResourceListener
         $urlParams = $params->toArray();
         $queryParams = [];
         $queryParams = array_merge($urlParams, $queryParams);
-        $qb = $this->getRoomMapper()->fetchAll($queryParams);  
+        $qb = $this->getRoomMapper()->fetchAll($queryParams);
         // return $qb;  // INI RETURN TANPA PAGINATION
 
         // FUNGSI createPaginatorAdapter DARI BAWAAN BANG HAKIM

@@ -31,16 +31,16 @@ class VehicleResource extends AbstractResourceListener
     public function create($data)
     {
         // var_dump("tes aja dlu, hbis ni diapus");exit();
-        try{
+        try {
             $inputFilter = $this->getInputFilter();
             // $vehicleUuid = $inputFilter->getValue('uuid');
             // $vehicle = $this->getVehicleMapper()->fetchOneBy(['uuid' => $vehicleUuid]);
             // if(! is_null($vehicle)){
             //     return new ApiProblem(422, "Vehicle with uuid ".$vehicleUuid."already exist!");
             // }
-            
+
             $vehicle = $this->getVehicleService()->save($inputFilter);
-        } catch (RuntimeException $e){
+        } catch (RuntimeException $e) {
             return new ApiProblem(500, $e->getMessage());
         }
         return $vehicle;
@@ -82,7 +82,7 @@ class VehicleResource extends AbstractResourceListener
     {
         // return new ApiProblem(405, 'The DELETE method has not been defined for individual resources');
         $vehicle = $this->getVehicleMapper()->fetchOneBy(['uuid' => $id]);
-        if (is_null($vehicle)){
+        if (is_null($vehicle)) {
             return new ApiProblem(404, "Vehicle Not Found KENAPAAA");
         }
         $inputFilter = $this->getInputFilter();
@@ -128,7 +128,7 @@ class VehicleResource extends AbstractResourceListener
         $urlParams = $params->toArray();
         $queryParams = [];
         $queryParams = array_merge($urlParams, $queryParams);
-        $qb = $this->getVehicleMapper()->fetchAll($queryParams);  
+        $qb = $this->getVehicleMapper()->fetchAll($queryParams);
         // return $qb;  // INI RETURN TANPA PAGINATION
 
         // FUNGSI createPaginatorAdapter DARI BAWAAN BANG HAKIM

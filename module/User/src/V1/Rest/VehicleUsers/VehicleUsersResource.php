@@ -1,5 +1,5 @@
 <?php
-namespace User\V1\Rest\RoomUsers;
+namespace User\V1\Rest\VehicleUsers;
 
 use Psr\Log\LoggerAwareTrait;
 use RuntimeException;
@@ -8,18 +8,19 @@ use ZF\ApiProblem\ApiProblemResponse;
 use ZF\Rest\AbstractResourceListener;
 use Zend\Paginator\Paginator as ZendPaginator;
 
-class RoomUsersResource extends AbstractResourceListener
+class VehicleUsersResource extends AbstractResourceListener
 {
     use LoggerAwareTrait;
 
-    protected $roomUsersMapper;
-    protected $roomUsersService;
+    protected $vehicleUsersMapper;
+    protected $vehicleUsersService;
 
     public function __construct(
-        \User\Mapper\RoomUsers $roomUsersMapper
+        \User\Mapper\VehicleUsers $vehicleUsersMapper
     ) {
-        $this->setRoomUsersMapper($roomUsersMapper);
+        $this->setVehicleUsersMapper($vehicleUsersMapper);
     }
+
     /**
      * Create a resource
      *
@@ -29,44 +30,14 @@ class RoomUsersResource extends AbstractResourceListener
     public function create($data)
     {
         // return new ApiProblem(405, 'The POST method has not been defined');
-
-        // var_dump(get_class($this->getRoomUsersMapper()));
         try {
             $inputFilter = $this->getInputFilter();
-
-            // var_dump($inputFilter); exit();
-            $roomUsers = $this->getRoomUsersService()->save($inputFilter);
-            // return new ApiProblem(405, 'The POST method has not been defined');
+            // var_dump("Hahahaha");
+            $vehicleUsers = $this->getVehicleUsersService()->save($inputFilter);
         } catch (RuntimeException $e) {
             return new ApiProblem(500, $e->getMessage());
         }
-        return $roomUsers;
-    }
-
-    /**
-     *  Patch (partian in-place update) a resource
-     *
-     * @param mixed $id
-     * @param mixed $data
-     * @return ApiProblem|mixed
-     */
-    public function patch($id, $data)
-    {
-        // var_dump("Yeyy coba dulu");
-        $roomUsers = $this->getRoomUsersMapper()->fetchOneBy(['uuid' => $id]);
-        if (is_null($roomUsers)) {
-            return new ApiProblem(404, "Room Users Not Found");
-        }
-        // var_dump($roomUsers);
-        $inputFilter = $this->getInputFilter()->getValues();
-
-        try {
-            // $roomUsers = $this->getRoomUsersService()->update($roomUsers, $this->getInputFilter());
-            $roomUsers = $this->getRoomUsersService()->update($roomUsers, $this->getInputFilter());
-            return $roomUsers;
-        } catch (RuntimeException $e) {
-            return new ApiProblemResponse(new ApiProblem(500, $e->getMessage()));
-        }
+        return $vehicleUsers;
     }
 
     /**
@@ -78,13 +49,13 @@ class RoomUsersResource extends AbstractResourceListener
     public function delete($id)
     {
         // return new ApiProblem(405, 'The DELETE method has not been defined for individual resources');
-        $roomUsers = $this->getRoomUsersMapper()->fetchOneBy(['uuid' => $id]);
-        if (is_null($roomUsers)) {
-            return new ApiProblem(404, "Room Users Not Found, Yes.");
+        $vehicleUsers = $this->getVehicleUsersMapper()->fetchOneBy(['uuid' => $id]);
+        if (is_null($vehicleUsers)) {
+            return new ApiProblem(404, "Vehicle Users Not Found, Yes.");
         }
         $inputFilter = $this->getInputFilter();
 
-        return $this->getRoomUsersService()->delete($roomUsers);
+        return $this->getVehicleUsersService()->delete($vehicleUsers);
     }
 
     /**
@@ -121,9 +92,33 @@ class RoomUsersResource extends AbstractResourceListener
         $urlParams = $params->toArray();
         $queryParams = [];
         $queryParams = array_merge($urlParams, $queryParams);
-        $qb = $this->getRoomUsersMapper()->fetchAll($queryParams);
-        $paginatorAdapter = $this->getRoomUsersMapper()->buildListPaginatorAdapter($queryParams, $order, $asc);
+        $qb = $this->getVehicleUsersMapper()->fetchAll($queryParams);
+        $paginatorAdapter = $this->getVehicleUsersMapper()->buildListPaginatorAdapter($queryParams, $order, $asc);
         return new ZendPaginator($paginatorAdapter);
+    }
+
+    /**
+     * Patch (partial in-place update) a resource
+     *
+     * @param  mixed $id
+     * @param  mixed $data
+     * @return ApiProblem|mixed
+     */
+    public function patch($id, $data)
+    {
+        // return new ApiProblem(405, 'The PATCH method has not been defined for individual resources');
+        $vehicleUsers = $this->getVehicleUsersMapper()->fetchOneBy(['uuid' => $id]);
+        if (is_null($vehicleUsers)) {
+            return new ApiProblem(404, "Vehicle Users Not Found");
+        }
+
+        $inputFilter = $this->getInputFilter()->getValues();
+
+        try {
+            $vehicleUsers = $this->getVehicleUsersService()->update($vehicleUsers, $this->getInputFilter());
+        } catch (RuntimeException $e) {
+            return new ApiProblemResponse(new ApiProblem(500, $e->getMessage()));
+        }
     }
 
     /**
@@ -160,42 +155,44 @@ class RoomUsersResource extends AbstractResourceListener
         return new ApiProblem(405, 'The PUT method has not been defined for individual resources');
     }
 
+
     /**
-     * Get the value of roomUsersMapper
+     * Get the value of vehicleUsersMapper
      */
-    public function getRoomUsersMapper()
+    public function getVehicleUsersMapper()
     {
-        return $this->roomUsersMapper;
+        return $this->vehicleUsersMapper;
     }
 
     /**
-     * Set the value of roomUsersMapper
+     * Set the value of vehicleUsersMapper
      *
      * @return  self
      */
-    public function setRoomUsersMapper($roomUsersMapper)
+    public function setVehicleUsersMapper($vehicleUsersMapper)
     {
-        $this->roomUsersMapper = $roomUsersMapper;
+        $this->vehicleUsersMapper = $vehicleUsersMapper;
 
         return $this;
     }
 
+
     /**
-     * Get the value of roomService
+     * Get the value of vehicleUsersService
      */
-    public function getRoomUsersService()
+    public function getVehicleUsersService()
     {
-        return $this->roomUsersService;
+        return $this->vehicleUsersService;
     }
 
     /**
-     * Set the value of roomUsersService
+     * Set the value of vehicleUsersService
      *
      * @return  self
      */
-    public function setRoomUsersService($roomUsersService)
+    public function setVehicleUsersService($vehicleUsersService)
     {
-        $this->roomUsersService = $roomUsersService;
+        $this->vehicleUsersService = $vehicleUsersService;
 
         return $this;
     }

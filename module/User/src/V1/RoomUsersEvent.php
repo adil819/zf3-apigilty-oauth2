@@ -61,7 +61,7 @@ class RoomUsersEvent extends Event
     public function setRoomUsersData(array $roomUsersData)
     {
         $this->roomUsersData = $roomUsersData;
-    }    
+    }
 
     /**
      * @return the $updateData

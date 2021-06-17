@@ -21,8 +21,8 @@ class Room extends AbstractMapper implements MapperInterface
     }
 
     // INI FUNGSI fetchAll dari Bang Hakim untuk di mapper
-    
-    public function fetchAll(array $params = [], $order = null, $asc = false)
+
+    public function fetchAll(array $params = [], $order = null, $asc = true)
     {
         $qb = $this->getEntityRepository()->createQueryBuilder('r');
         $cacheKey = '';
@@ -45,11 +45,12 @@ class Room extends AbstractMapper implements MapperInterface
         $query = $qb->getQuery();
         $query->useQueryCache(true);
         $query->useResultCache(true, 600);
+        $query->orderBy('r.name', 'ASC');
+
         // $result = $query->getResult();
         // return $result;
         return $query;
     }
 
     // public function delete(array $param)
-
 }

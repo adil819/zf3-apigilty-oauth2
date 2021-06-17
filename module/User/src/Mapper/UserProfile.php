@@ -42,11 +42,7 @@ class UserProfile extends AbstractMapper implements MapperInterface
         return $query;
     }
 
-    public function create($data){
-        
+    public function create($data)
+    {
     }
-
-
-
-
 }

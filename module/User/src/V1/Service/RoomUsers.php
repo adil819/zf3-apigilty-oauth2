@@ -74,12 +74,14 @@ class RoomUsers
     //     }
     // }
 
-    public function save(ZendInputFilter $inputFilter) {   // DITIRU DARI DEVICE
+    public function save(ZendInputFilter $inputFilter)
+    {
+   // DITIRU DARI DEVICE
         $roomUsersEvent = new RoomUsersEvent();
         $roomUsersEvent->setInputFilter($inputFilter);
         $roomUsersEvent->setName(RoomUsersEvent::EVENT_CREATE_ROOMUSERS);
         $create = $this->getEventManager()->triggerEvent($roomUsersEvent);
-        if ($create->stopped()){
+        if ($create->stopped()) {
             $roomUsersEvent->setName(RoomUsersEvent::EVENT_CREATE_ROOMUSERS_ERROR);
             $roomUsersEvent->setException($create->last());
             $this->getEventManager()->triggerEvent($roomUsersEvent);
@@ -90,15 +92,16 @@ class RoomUsers
             return $roomUsersEvent->getRoomUsersEntity();
         }
     }
-    
-    public function update(RoomUsersEntity $roomUsers, ZendInputFilter $newData){
+
+    public function update(RoomUsersEntity $roomUsers, ZendInputFilter $newData)
+    {
         $roomUsersEvent = new RoomUsersEvent();
         $roomUsersEvent->setInputFilter($newData);
         $roomUsersEvent->setUpdateData($newData->getValues());
         $roomUsersEvent->setRoomUsersEntity($roomUsers);
         $roomUsersEvent->setName(RoomUsersEvent::EVENT_UPDATE_ROOMUSERS);
-        $update = $this->getEventManager()->triggerEvent($roomUsersEvent); 
-        if ($update->stopped()){
+        $update = $this->getEventManager()->triggerEvent($roomUsersEvent);
+        if ($update->stopped()) {
             $roomUsersEvent->setName(RoomUsersEvent::EVENT_UPDATE_ROOMUSERS_ERROR);
             $roomUsersEvent->setException($update->last());
             $this->getEventManager()->triggerEvent($roomUsersEvent);
@@ -111,12 +114,13 @@ class RoomUsers
         }
     }
 
-    public function delete(RoomUsersEntity $roomUsers){
+    public function delete(RoomUsersEntity $roomUsers)
+    {
         $roomUsersEvent = new RoomUsersEvent();
         $roomUsersEvent->setRoomUsersEntity($roomUsers);
         $roomUsersEvent->setName(RoomUsersEvent::EVENT_DELETE_ROOMUSERS);
         $delete = $this->getEventManager()->triggerEvent($roomUsersEvent);
-        if ($delete->stopped()){
+        if ($delete->stopped()) {
             $roomUsersEvent->setName(RoomUsersEvent::EVENT_DELETE_ROOMUSERS_ERROR);
             $roomUsersEvent->setException($delete->last());
             $this->getEventManager()->triggerEvent($roomUsersEvent);

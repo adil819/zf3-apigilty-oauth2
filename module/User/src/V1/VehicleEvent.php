@@ -61,7 +61,7 @@ class VehicleEvent extends Event
     public function setVehicleData(array $vehicleData)
     {
         $this->vehicleData = $vehicleData;
-    }    
+    }
 
     /**
      * @return the $updateData

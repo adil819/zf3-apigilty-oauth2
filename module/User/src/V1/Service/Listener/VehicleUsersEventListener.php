@@ -7,11 +7,10 @@ use Zend\EventManager\ListenerAggregateTrait;
 use Zend\InputFilter\InputFilterInterface;
 use Zend\InputFilter\Exception\InvalidArgumentException;
 use Psr\Log\LoggerAwareTrait;
-use User\Mapper\Room as RoomMapper;
-use User\Entity\Room as RoomEntity;
-use User\V1\RoomEvent;
+use User\Entity\VehicleUsers as VehicleUsersEntity;
+use User\V1\VehicleUsersEvent;
 
-class RoomEventListener implements ListenerAggregateInterface
+class VehicleUsersEventListener implements ListenerAggregateInterface
 {
     use ListenerAggregateTrait;
 
@@ -19,21 +18,17 @@ class RoomEventListener implements ListenerAggregateInterface
 
     protected $config;
 
-    protected $roomMapper;
+    protected $vehicleUsersMapper;
 
-    protected $roomHydrator;
+    protected $vehicleUsersHydrator;
 
     /**
      * Constructor
      *
-     * @param RoomMapper   $roomMapper
-     * @param RoomHydrator $roomHydrator
-     * @param array $config
      */
-    public function __construct(
-        RoomMapper $roomMapper
-    ) {
-        $this->setRoomMapper($roomMapper);
+    public function __construct(\User\Mapper\VehicleUsers $vehicleUsersMapper)
+    {
+        $this->setVehicleUsersMapper($vehicleUsersMapper);
     }
 
     /**
@@ -43,26 +38,26 @@ class RoomEventListener implements ListenerAggregateInterface
     public function attach(EventManagerInterface $events, $priority = 1)
     {
         $this->listeners[] = $events->attach(
-            RoomEvent::EVENT_CREATE_ROOM,
-            [$this, 'createRoom'],
+            VehicleUsersEvent::EVENT_CREATE_VEHICLEUSERS,
+            [$this, 'createVehicleUsers'],
             499
         );
 
         $this->listeners[] = $events->attach(
-            RoomEvent::EVENT_UPDATE_ROOM,
-            [$this, 'updateRoom'],
+            VehicleUsersEvent::EVENT_UPDATE_VEHICLEUSERS,
+            [$this, 'updateVehicle'],
             499
         );
 
         $this->listeners[] = $events->attach(
-            RoomEvent::EVENT_DELETE_ROOM,
-            [$this, 'deleteRoom'],
+            VehicleUsersEvent::EVENT_DELETE_VEHICLEUSERS,
+            [$this, 'deleteVehicle'],
             499
         );
     }
 
     # DITIRU DARI CREATEDEVICE()
-    public function createRoom(RoomEvent $event)
+    public function createVehicleUsers(VehicleUsersEvent $event)
     {
         try {
             if (! $event->getInputFilter() instanceof InputFilterInterface) {
@@ -70,11 +65,11 @@ class RoomEventListener implements ListenerAggregateInterface
             }
 
             $data = $event->getInputFilter()->getValues();
-            $roomEntity = new RoomEntity;
-            $room = $this->getRoomHydrator()->hydrate($data, $roomEntity);
+            $vehicleUsersEntity = new VehicleUsersEntity;
+            $vehicleUsers = $this->getVehicleUsersHydrator()->hydrate($data, $vehicleUsersEntity);
 
-            $result = $this->getRoomMapper()->save($room);
-            $event->setRoomEntity($room);
+            $result = $this->getVehicleUsersMapper()->save($vehicleUsers);
+            $event->setVehicleUsersEntity($vehicleUsers);
             $uuid = $result->getUuid();
             $this->logger->log(
                 \Psr\Log\LogLevel::INFO,
@@ -90,15 +85,15 @@ class RoomEventListener implements ListenerAggregateInterface
     }
 
     /**
-     * Update Room
+     * Update Vehicle
      *
      * @param  SignupEvent $event
      * @return void|\Exception
      */
-    public function updateRoom(RoomEvent $event)
+    public function updateVehicle(VehicleUsersEvent $event)
     {
         try {
-            $roomEntity = $event->getRoomEntity();
+            $vehicleUsersEntity = $event->getVehicleUsersEntity();
             $updateData  = $event->getUpdateData();
             // add file input filter here
             if (! $event->getInputFilter() instanceof InputFilterInterface) {
@@ -113,15 +108,16 @@ class RoomEventListener implements ListenerAggregateInterface
             //             'randomize' => true,
             //             'use_upload_extension' => true
             //         ]));
-            $room = $this->getRoomHydrator()->hydrate($updateData, $roomEntity);
-            $this->getRoomMapper()->save($room);
-            $event->setRoomEntity($room);
+            $vehicleUsers = $this->getVehicleUsersHydrator()->hydrate($updateData, $vehicleUsersEntity);
+            $result = $this->getVehicleUsersMapper()->save($vehicleUsers);
+            $event->setVehicleUsersEntity($vehicleUsers);
+            $uuid = $result->getUuid();
             $this->logger->log(
                 \Psr\Log\LogLevel::INFO,
-                "{function} room: {id} updated",
+                "{function} vehicle: {uuid} updated",
                 [
-                    "function" => __FUNCTION__,
-                    "id" => $roomEntity->getUuid()
+                    'uuid' => $uuid,
+                    "function" => __FUNCTION__
                 ]
             );
         } catch (\Exception $e) {
@@ -130,11 +126,11 @@ class RoomEventListener implements ListenerAggregateInterface
         }
     }
 
-    public function deleteRoom(RoomEvent $event)
+    public function deleteVehicle(VehicleUsersEvent $event)
     {
         try {
-            $deletedData = $event->getRoomEntity();
-            $this->getRoomMapper()->delete($deletedData);
+            $deletedData = $event->getVehicleUsersEntity();
+            $this->getVehicleUsersMapper()->delete($deletedData);
             $uuid = $deletedData->getUuid();
 
             $this->logger->log(
@@ -149,29 +145,6 @@ class RoomEventListener implements ListenerAggregateInterface
             $this->logger->log(\Psr\Log\LogLevel::ERROR, "{function} : Something Error! \nError_message: ".$e->getMessage(), ["function" => __FUNCTION__]);
         }
     }
-
-    // public function deleteRoom(RoomEvent $event)
-    // {
-    //     try {
-    //         $roomEntity = $event->getRoomEntity();
-
-    //         $room = $this->getRoomHydrator()->hydrate($roomEntity);
-    //         $this->getRoomMapper()->save($room);
-    //         $event->setRoomEntity($room);
-    //         $this->logger->log(
-    //             \Psr\Log\LogLevel::INFO,
-    //             "{function} room: {id} deleted, name: {name}",
-    //             [
-    //                 "function" => __FUNCTION__,
-    //                 "id" => $roomEntity->getUuid(),
-    //                 "name" => $roomEntity->getName()
-    //             ]
-    //         );
-    //     } catch (\Exception $e) {
-    //         $event->stopPropagation(true);
-    //         return $e;
-    //     }
-    // }
 
     /**
      * @return the $config
@@ -190,34 +163,40 @@ class RoomEventListener implements ListenerAggregateInterface
     }
 
     /**
-     * @return the $roomMapper
+     * @return the $vehicleUsersHydrator
      */
-    public function getRoomMapper()
+    public function getVehicleUsersHydrator()
     {
-        return $this->roomMapper;
+        return $this->vehicleUsersHydrator;
     }
 
     /**
-     * @param RoomMapper $roomMapper
+     * @param DoctrineObject $vehicleHydrator
      */
-    public function setRoomMapper(RoomMapper $roomMapper)
+    public function setVehicleUsersHydrator($vehicleUsersHydrator)
     {
-        $this->roomMapper = $roomMapper;
+        $this->vehicleUsersHydrator = $vehicleUsersHydrator;
+    }
+
+
+
+    /**
+     * Get the value of vehicleUsersMapper
+     */
+    public function getVehicleUsersMapper()
+    {
+        return $this->vehicleUsersMapper;
     }
 
     /**
-     * @return the $roomHydrator
+     * Set the value of vehicleUsersMapper
+     *
+     * @return  self
      */
-    public function getRoomHydrator()
+    public function setVehicleUsersMapper($vehicleUsersMapper)
     {
-        return $this->roomHydrator;
-    }
+        $this->vehicleUsersMapper = $vehicleUsersMapper;
 
-    /**
-     * @param DoctrineObject $roomHydrator
-     */
-    public function setRoomHydrator($roomHydrator)
-    {
-        $this->roomHydrator = $roomHydrator;
+        return $this;
     }
 }

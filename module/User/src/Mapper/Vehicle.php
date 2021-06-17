@@ -21,15 +21,15 @@ class Vehicle extends AbstractMapper implements MapperInterface
     }
 
     // INI FUNGSI fetchAll dari Bang Hakim untuk di mapper
-    
+
     // OVERRIDING fetchAll class parents, yaitu AbstractMapper
     public function fetchAll(array $params = [], $order = null, $asc = false)
     {
         $qb = $this->getEntityRepository()->createQueryBuilder('r');
         $cacheKey = '';
 
-        // di Apigility => Collection Query String Whitelist => tambah kolom nya        
-        
+        // di Apigility => Collection Query String Whitelist => tambah kolom nya
+
         if (isset($params['brand'])) {
             // $params['brand'] = (int)$params['brand'];
             $qb->andWhere('r.brand = :brand')
@@ -48,7 +48,7 @@ class Vehicle extends AbstractMapper implements MapperInterface
                ->setParameter('productionYear', $params['productionYear']);
             $cacheKey .= '_' . $params['productionYear'];
         }
-        
+
 
         $query = $qb->getQuery();
         $query->useQueryCache(true);
@@ -59,5 +59,4 @@ class Vehicle extends AbstractMapper implements MapperInterface
     }
 
     // public function delete(array $param)
-
 }

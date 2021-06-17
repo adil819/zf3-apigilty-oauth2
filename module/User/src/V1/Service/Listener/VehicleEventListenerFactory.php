@@ -10,7 +10,7 @@ class VehicleEventListenerFactory implements FactoryInterface
     {
         $vehicleMapper    = $container->get('User\Mapper\Vehicle');
         $vehicleHydrator  = $container->get('HydratorManager')->get('User\Hydrator\Vehicle');
-        
+
         $vehicleEventListener = new VehicleEventListener($vehicleMapper);
         $vehicleEventListener->setLogger($container->get("logger_default"));
         $vehicleEventListener->setVehicleHydrator($vehicleHydrator);

@@ -11,7 +11,7 @@ class RoomUsersEventListenerFactory implements FactoryInterface
         $roomUsersMapper    = $container->get('User\Mapper\RoomUsers');
         // $roomUsersMapper    = $container->get(\User\Mapper\RoomUsers::class);
         $roomUsersHydrator  = $container->get('HydratorManager')->get('User\Hydrator\RoomUsers');
-        
+
         $roomUsersEventListener = new RoomUsersEventListener($roomUsersMapper);
         $roomUsersEventListener->setLogger($container->get("logger_default"));
         $roomUsersEventListener->setRoomUsersHydrator($roomUsersHydrator);

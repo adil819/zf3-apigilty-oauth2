@@ -3,14 +3,14 @@
 namespace User\V1\Hydrator\Strategy;
 
 use Zend\Hydrator\Strategy\StrategyInterface;
-use User\Entity\UserProfile;
+use User\Entity\Vehicle;
 
 /**
- * Class RoomStrategy
+ * Class VehicleStrategy
  *
  * @package User\Stdlib\Hydrator\Strategy
  */
-class UserProfileStrategy implements StrategyInterface
+class VehicleStrategy implements StrategyInterface
 {
     /**
      * Converts the given value so that it can be extracted by the hydrator.
@@ -24,11 +24,11 @@ class UserProfileStrategy implements StrategyInterface
      */
     public function extract($value, $object = null)
     {
-        if ($value instanceof UserProfile && ! is_null($value)) {
+        if ($value instanceof Vehicle && ! is_null($value)) {
             $values = [
-                "firstName" => $value->getFirstName(),
-                "lastName" => $value->getLastName(),
-                "address" => $value->getAddress()
+                "brand" => $value->getBrand(),
+                "wheel" => $value->getWheel(),
+                "productionYear" => $value->getProductionYear()
             ];
 
             return $values;

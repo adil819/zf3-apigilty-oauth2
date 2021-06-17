@@ -7,37 +7,37 @@ use Aqilix\ORM\Entity\EntityInterface;
 use Zend\InputFilter\InputFilterInterface;
 use \Exception;
 
-class RoomEvent extends Event
+class VehicleUsersEvent extends Event
 {
     /**#@+
-     * Room events triggered by eventmanager
+     * VehicleUsers events triggered by eventmanager
      */
     # UPDATE DITIRU DARI PROFILE
-    const EVENT_UPDATE_ROOM  = 'update.room';
-    const EVENT_UPDATE_ROOM_ERROR   = 'update.room.error';
-    const EVENT_UPDATE_ROOM_SUCCESS = 'update.room.success';
+    const EVENT_UPDATE_VEHICLEUSERS  = 'update.vehicleusers';
+    const EVENT_UPDATE_VEHICLEUSERS_ERROR   = 'update.vehicleusers.error';
+    const EVENT_UPDATE_VEHICLEUSERS_SUCCESS = 'update.vehicleusers.success';
 
-    #INSERT DITIRU DARI SIGNUP
-    const EVENT_INSERT_ROOM  = 'insert.room';
-    const EVENT_INSERT_ROOM_ERROR   = 'insert.room.error';
-    const EVENT_INSERT_ROOM_SUCCESS = 'insert.room.success';
+    // #INSERT DITIRU DARI SIGNUP
+    // const EVENT_INSERT_VEHICLE_USERS  = 'insert.vehicle.users';
+    // const EVENT_INSERT_VEHICLE_USERS_ERROR   = 'insert.vehicle.users.error';
+    // const EVENT_INSERT_VEHICLE_USERS_SUCCESS = 'insert.vehicle.users.success';
 
     #CREATE DITIRU DARI DEVICE
-    const EVENT_CREATE_ROOM  = 'create.room';
-    const EVENT_CREATE_ROOM_ERROR   = 'create.room.error';
-    const EVENT_CREATE_ROOM_SUCCESS = 'create.room.success';
+    const EVENT_CREATE_VEHICLEUSERS  = 'create.vehicleusers';
+    const EVENT_CREATE_VEHICLEUSERS_ERROR   = 'create.vehicleusers.error';
+    const EVENT_CREATE_VEHICLEUSERS_SUCCESS = 'create.vehicleusers.success';
 
     #DELETE BUAT SENDIRI TANPA CONTEK DENGAN MENGINGAT ALUR NYA
-    const EVENT_DELETE_ROOM = 'delete.room';
-    const EVENT_DELETE_ROOM_ERROR = 'delete.room.error';
-    const EVENT_DELETE_ROOM_SUCCESS = 'delete.room.success';
+    const EVENT_DELETE_VEHICLEUSERS = 'delete.vehicleusers';
+    const EVENT_DELETE_VEHICLEUSERS_ERROR = 'delete.vehicleusers.error';
+    const EVENT_DELETE_VEHICLEUSERS_SUCCESS = 'delete.vehicleusers.success';
 
     /**#@-*/
 
     /**
-     * @var User\Entity\UserRoom
+     * @var User\Entity\UserVehicleUsers
      */
-    protected $roomEntity;
+    protected $vehicleUsersEntity;
 
     /**
      * @var Zend\InputFilter\InputFilterInterface
@@ -56,11 +56,11 @@ class RoomEvent extends Event
 
     // INI DIMODIFIKASI DARI SignupEvent
     /**
-     * @param Array $roomData
+     * @param Array $vehicleusersData
      */
-    public function setRoomData(array $roomData)
+    public function setVehicleUsersData(array $vehicleUsersData)
     {
-        $this->roomData = $roomData;
+        $this->vehicleUsersData = $vehicleUsersData;
     }
 
     /**
@@ -112,19 +112,19 @@ class RoomEvent extends Event
     }
 
     /**
-     * Get the value of roomEntity
+     * Get the value of vehicleUsersEntity
      */
-    public function getRoomEntity()
+    public function getVehicleUsersEntity()
     {
-        return $this->roomEntity;
+        return $this->vehicleUsersEntity;
     }
 
     /**
-     * Set the value of roomEntity
+     * Set the value of vehicleusersEntity
      */
-    public function setRoomEntity($roomEntity): self
+    public function setVehicleUsersEntity($vehicleUsersEntity): self
     {
-        $this->roomEntity = $roomEntity;
+        $this->vehicleUsersEntity = $vehicleUsersEntity;
 
         return $this;
     }

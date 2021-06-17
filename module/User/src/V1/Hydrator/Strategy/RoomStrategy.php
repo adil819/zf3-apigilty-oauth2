@@ -24,7 +24,7 @@ class RoomStrategy implements StrategyInterface
      */
     public function extract($value, $object = null)
     {
-        if ($value instanceof Room && ! is_null($value)) {  
+        if ($value instanceof Room && ! is_null($value)) {
             $values = [
                 "name" => $value->getName(),
                 "capacity" => $value->getCapacity()
