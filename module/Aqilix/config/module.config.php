@@ -17,6 +17,9 @@ return [
         "delegators" => [
             "logger_default" => [
                 Aqilix\Service\PsrLoggerDelegator::class
+            ],
+            "logger_room" => [
+                Aqilix\Service\PsrLoggerDelegator::class
             ]
         ]
     ],
@@ -35,10 +38,10 @@ return [
         "logger_room" => [
             "writers" => [
                 [
-                    "name" => "room",
-                    "priority" => Logger::DEBUG,
+                    "name" => "stream",
+                    "priority" => Logger::INFO,
                     "options" => [
-                        'room' => 'data/log/room.log',
+                        'stream' => 'data/log/room.log',
                     ]
                 ]
             ]
