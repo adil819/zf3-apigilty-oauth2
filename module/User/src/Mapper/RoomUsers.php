@@ -26,11 +26,11 @@ class RoomUsers extends AbstractMapper implements MapperInterface
         $cacheKey = '';
 
         // di Apigility => Collection Query String Whitelist => tambah kolom nya
-        // if (isset($params['name'])) {
+        // if (isset($params['room'])) {
         //     // $params['name'] = (int)$params['name'];
-        //     $qb->andWhere('r.name = :name')
-        //        ->setParameter('name', $params['name']);
-        //     $cacheKey .= '_' . $params['name'];
+        //     $qb->andWhere('r.room = :room')
+        //        ->setParameter('room', $params['room']);
+        //     $cacheKey .= '_' . $params['room'];
         // }
 
         $query = $qb->getQuery();

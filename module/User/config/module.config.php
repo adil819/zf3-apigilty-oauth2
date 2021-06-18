@@ -9,6 +9,7 @@ return [
             'User\\V1\\Rpc\\ResetPasswordConfirmEmail\\Controller' => \User\V1\Rpc\ResetPasswordConfirmEmail\ResetPasswordConfirmEmailControllerFactory::class,
             'User\\V1\\Rpc\\ResetPasswordNewPassword\\Controller' => \User\V1\Rpc\ResetPasswordNewPassword\ResetPasswordNewPasswordControllerFactory::class,
             'User\\V1\\Rpc\\UserRoomStats\\Controller' => \User\V1\Rpc\UserRoomStats\UserRoomStatsControllerFactory::class,
+            'User\\V1\\Rpc\\UserVehicleStats\\Controller' => \User\V1\Rpc\UserVehicleStats\UserVehicleStatsControllerFactory::class,
         ],
     ],
     'service_manager' => [
@@ -170,6 +171,16 @@ return [
                     ],
                 ],
             ],
+            'user.rpc.user-vehicle-stats' => [
+                'type' => 'Segment',
+                'options' => [
+                    'route' => '/api/user-vehicle-stats',
+                    'defaults' => [
+                        'controller' => 'User\\V1\\Rpc\\UserVehicleStats\\Controller',
+                        'action' => 'userVehicleStats',
+                    ],
+                ],
+            ],
         ],
     ],
     'zf-versioning' => [
@@ -187,6 +198,7 @@ return [
             10 => 'user.rest.vehicle-users',
             11 => 'user.rpc.user-room-stats',
             12 => 'user.rpc.user-room-stats',
+            13 => 'user.rpc.user-vehicle-stats',
         ],
     ],
     'zf-rpc' => [
@@ -239,6 +251,13 @@ return [
             ],
             'route_name' => 'user.rpc.user-room-stats',
         ],
+        'User\\V1\\Rpc\\UserVehicleStats\\Controller' => [
+            'service_name' => 'UserVehicleStats',
+            'http_methods' => [
+                0 => 'GET',
+            ],
+            'route_name' => 'user.rpc.user-vehicle-stats',
+        ],
     ],
     'zf-content-negotiation' => [
         'controllers' => [
@@ -254,6 +273,7 @@ return [
             'User\\V1\\Rest\\VehicleUsers\\Controller' => 'HalJson',
             '' => 'Json',
             'User\\V1\\Rpc\\UserRoomStats\\Controller' => 'Json',
+            'User\\V1\\Rpc\\UserVehicleStats\\Controller' => 'Json',
         ],
         'accept_whitelist' => [
             'User\\V1\\Rpc\\Signup\\Controller' => [
@@ -312,6 +332,11 @@ return [
                 1 => 'application/json',
                 2 => 'application/*+json',
             ],
+            'User\\V1\\Rpc\\UserVehicleStats\\Controller' => [
+                0 => 'application/vnd.user.v1+json',
+                1 => 'application/json',
+                2 => 'application/*+json',
+            ],
         ],
         'content_type_whitelist' => [
             'User\\V1\\Rpc\\Signup\\Controller' => [
@@ -361,6 +386,10 @@ return [
                 1 => 'application/json',
             ],
             'User\\V1\\Rpc\\UserRoomStats\\Controller' => [
+                0 => 'application/vnd.user.v1+json',
+                1 => 'application/json',
+            ],
+            'User\\V1\\Rpc\\UserVehicleStats\\Controller' => [
                 0 => 'application/vnd.user.v1+json',
                 1 => 'application/json',
             ],
@@ -892,6 +921,8 @@ return [
                 0 => 'order',
                 1 => 'asc',
                 2 => 'name',
+                3 => 'uuid',
+                4 => 'capacity',
             ],
             'page_size' => '25',
             'page_size_param' => 'limit',
@@ -942,7 +973,9 @@ return [
                 0 => 'GET',
                 1 => 'POST',
             ],
-            'collection_query_whitelist' => [],
+            'collection_query_whitelist' => [
+                0 => 'roomUuid',
+            ],
             'page_size' => 25,
             'page_size_param' => 'limit',
             'entity_class' => \User\Entity\RoomUsers::class,
@@ -1186,6 +1219,17 @@ return [
             'User\\V1\\Rpc\\UserRoomStats\\Controller' => [
                 'actions' => [
                     'UserRoomStats' => [
+                        'GET' => true,
+                        'POST' => false,
+                        'PUT' => false,
+                        'PATCH' => false,
+                        'DELETE' => false,
+                    ],
+                ],
+            ],
+            'User\\V1\\Rpc\\UserVehicleStats\\Controller' => [
+                'actions' => [
+                    'UserVehicleStats' => [
                         'GET' => true,
                         'POST' => false,
                         'PUT' => false,

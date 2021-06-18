@@ -42,6 +42,20 @@ class Room extends AbstractMapper implements MapperInterface
             $cacheKey .= '_' . $params['name'];
         }
 
+        if (isset($params['uuid'])) {
+            // $params['name'] = (int)$params['name'];
+            $qb->andWhere('r.uuid = :uuid')
+               ->setParameter('uuid', $params['uuid']);
+            $cacheKey .= '_' . $params['uuid'];
+        }
+
+        if (isset($params['capacity'])) {
+            // $params['name'] = (int)$params['name'];
+            $qb->andWhere('r.capacity >= :capacity')
+               ->setParameter('capacity', $params['capacity']);
+            $cacheKey .= '_' . $params['capacity'];
+        }
+
         $query = $qb->getQuery();
         $query->useQueryCache(true);
         $query->useResultCache(true, 600);

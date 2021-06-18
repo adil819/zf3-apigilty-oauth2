@@ -44,12 +44,19 @@ class UserRoomStatsController extends AbstractActionController
         $userProfileCollection = $this->getUserProfileMapper()->fetchAll($queryParams);
         $result = $userProfileCollection->getResult();
         $totalUser = count($result);
-        
-        $roomCollection = $this->getRoomMapper()->fetchAll($queryParams);
+ 
+        $queryParamsR = [
+            // "uuid" => "f47a88ed-ccbf-11eb-b51a-0242ac110002"
+            "capacity" => "10"
+        ];               
+        $roomCollection = $this->getRoomMapper()->fetchAll($queryParamsR);
         $result = $roomCollection->getResult();
         $totalRoom = count($result);
-        
-        $roomUsersCollection = $this->getRoomUsersMapper()->fetchAll($queryParams);
+
+        $queryParamsRU = [
+            // "room_uuid" => "f47a88ed-ccbf-11eb-b51a-0242ac110002"
+        ];        
+        $roomUsersCollection = $this->getRoomUsersMapper()->fetchAll($queryParamsRU);
         $result = $roomUsersCollection->getResult();
         $totalRoomUsers = count($result);
     
