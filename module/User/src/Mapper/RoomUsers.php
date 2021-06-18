@@ -26,12 +26,12 @@ class RoomUsers extends AbstractMapper implements MapperInterface
         $cacheKey = '';
 
         // di Apigility => Collection Query String Whitelist => tambah kolom nya
-        // if (isset($params['room'])) {
-        //     // $params['name'] = (int)$params['name'];
-        //     $qb->andWhere('r.room = :room')
-        //        ->setParameter('room', $params['room']);
-        //     $cacheKey .= '_' . $params['room'];
-        // }
+        if (isset($params['uuid'])) {
+            // $params['name'] = (int)$params['name'];
+            $qb->andWhere('r.uuid = :uuid')
+               ->setParameter('uuid', $params['uuid']);
+            $cacheKey .= '_' . $params['uuid'];
+        }
 
         $query = $qb->getQuery();
         $query->useQueryCache(true);
@@ -39,5 +39,19 @@ class RoomUsers extends AbstractMapper implements MapperInterface
         // $result = $query->getResult();
         // return $result;
         return $query;
+    }
+
+    /**
+     * Fetch a resource
+     *
+     * @param  mixed $id
+     * @return ApiProblem|mixed
+     */
+    public function fetch($id)
+    {
+        // return new ApiProblem(405, 'The GET method has not been defined for individual resources');
+
+        // $roomUsers = $this->getRoomUsersMapper()->fetchOneBy(['uuid' => $id]);
+        // return $roomUsers;
     }
 }

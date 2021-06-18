@@ -10,10 +10,12 @@ use User\Mapper\VehicleUsers as VehicleUsersMapper;
 class UserVehicleStatsController extends AbstractActionController
 {
     public function __construct(
+        $user,
         \User\Mapper\UserProfile $userProfile,
         \User\Mapper\Vehicle $vehicle,
         \User\Mapper\VehicleUsers $vehicleUsersMapper)
     {
+        $this->user = $user;
         $this->setUserProfileMapper($userProfile);
         $this->setVehicleMapper($vehicle);
         $this->setVehicleUsersMapper($vehicleUsersMapper);
@@ -28,20 +30,48 @@ class UserVehicleStatsController extends AbstractActionController
         $totalUser = count($result);
 
         $queryParamsV = [
-            "brand" => "Suzuki"
+            // "brand" => "Suzuki"
         ];
         $vehicleCollection = $this->getVehicleMapper()->fetchAll($queryParamsV);
-        $result = $vehicleCollection->getResult();
-        $totalVehicle = count($result);
+        $result1 = $vehicleCollection->getResult();
+        $totalVehicle = count($result1);
 
         $vehicleUsersCollection = $this->getVehicleUsersMapper()->fetchAll($queryParams);
         $result = $vehicleUsersCollection->getResult();
-        $totalVehicleUsers = count($result);
+        $totalVehiclesUsers = count($result);
+
+        $totalYourVehicles = 0;
+        $listYourVehicles = [];
+        foreach($result as $vehicleUser){
+            if($vehicleUser->getUserProfile()->getUuid() == $this->user->getUuid()){
+                $totalYourVehicles += 1;
+                array_push($listYourVehicles, $vehicleUser->getVehicle()->getBrand());
+            }
+        }
+
+        foreach($result1 as $vehicle){
+            $totalVehicleUsers[$vehicle->getBrand()] = 0;
+            $listVehicleUsers[$vehicle->getBrand()] = [];
+            foreach($result as $vehicleUser){
+                if($vehicle->getUuid() == $vehicleUser->getVehicle()->getUuid()){
+                    $totalVehicleUsers[$vehicle->getBrand()] += 1;
+                    $name = $vehicleUser->getUserProfile()->getFirstName . " " . $vehicleUser->getUserProfile()->getLastname();
+                    array_push($listVehicleUsers[$vehicle->getBrand()], $name);
+                }
+            }
+        }
 
         $response = [
-            "totalUserProfile" => $totalUser,
+            "currentUser" => [
+                "name"  => $this->user->getFirstName() . " " . $this->user->getLastName(),
+                "totalYourVehicles" => $totalYourVehicles,
+                "listYourVehicles" => $listYourVehicles
+            ],
+            "totalUser" => $totalUser,
             "totalVehicle" => $totalVehicle,
-            "totalVehicleUsers" => $totalVehicleUsers
+            "totalVehicleUsed" => $totalVehiclesUsers,
+            "totalVehicleBooked" => $totalVehicleUsers,
+            "listVehicleBooked" => $listVehicleUsers
         ];
 
         return new HalJsonModel($response);

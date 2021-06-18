@@ -5,6 +5,7 @@ use Psr\Log\LoggerAwareTrait;
 use RuntimeException;
 use ZF\ApiProblem\ApiProblem;
 use ZF\ApiProblem\ApiProblemResponse;
+use User\Mapper\RoomUsers as RoomUsersMapper;
 use ZF\Rest\AbstractResourceListener;
 use Zend\Paginator\Paginator as ZendPaginator;
 
@@ -87,6 +88,12 @@ class RoomUsersResource extends AbstractResourceListener
         return $this->getRoomUsersService()->delete($roomUsers);
     }
 
+    // public function FetchByRoom($roomUuid)
+    // {
+    //     $roomUsers = $this->getRoomUsersMapper()->fetchOneBy(['room_uuid' => $roomUuid]);
+    //     return $roomUsers;
+    // }
+
     /**
      * Delete a collection, or members of a collection
      *
@@ -106,7 +113,10 @@ class RoomUsersResource extends AbstractResourceListener
      */
     public function fetch($id)
     {
-        return new ApiProblem(405, 'The GET method has not been defined for individual resources');
+        // return new ApiProblem(405, 'The GET method has not been defined for individual resources');
+
+        $roomUsers = $this->getRoomUsersMapper()->fetchOneBy(['uuid' => $id]);
+        return $roomUsers;
     }
 
     /**
@@ -119,12 +129,20 @@ class RoomUsersResource extends AbstractResourceListener
     {
         // return new ApiProblem(405, 'The GET method has not been defined for collections');
         $urlParams = $params->toArray();
-        $queryParams = [];
+        $queryParams = [
+            "uuid" => "1749265f-ce46-11eb-8c8d-0242ac110002"
+            // // "roomUuid" => "f47a88ed-ccbf-11eb-b51a-0242ac110002"
+            // // "room" => [
+            // //     "name" => "VIP Room",
+            // //     "capacity" => "10"
+            // // ]
+        ];
         $queryParams = array_merge($urlParams, $queryParams);
         $qb = $this->getRoomUsersMapper()->fetchAll($queryParams);
         $paginatorAdapter = $this->getRoomUsersMapper()->buildListPaginatorAdapter($queryParams, $order, $asc);
         return new ZendPaginator($paginatorAdapter);
     }
+
 
     /**
      * Patch (partial in-place update) a collection or members of a collection
@@ -173,7 +191,7 @@ class RoomUsersResource extends AbstractResourceListener
      *
      * @return  self
      */
-    public function setRoomUsersMapper($roomUsersMapper)
+    public function setRoomUsersMapper(RoomUsersMapper $roomUsersMapper)
     {
         $this->roomUsersMapper = $roomUsersMapper;
 

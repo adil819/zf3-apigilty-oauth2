@@ -126,7 +126,9 @@ class VehicleResource extends AbstractResourceListener
     public function fetchAll($params = [])
     {
         $urlParams = $params->toArray();
-        $queryParams = [];
+        $queryParams = [
+            // "uuid" => "1e8fcbc1-cd83-11eb-8c8d-0242ac110002"
+        ];
         $queryParams = array_merge($urlParams, $queryParams);
         $qb = $this->getVehicleMapper()->fetchAll($queryParams);
         // return $qb;  // INI RETURN TANPA PAGINATION

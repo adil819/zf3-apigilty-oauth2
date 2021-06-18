@@ -11,11 +11,15 @@ use User\Mapper\RoomUsers as RoomUsersMapper;
 
 class UserRoomStatsController extends AbstractActionController
 {
+    private $user;
+
     public function __construct(
+        $user,
         \User\Mapper\UserProfile $userProfile,
         \User\Mapper\Room $room,
         \User\Mapper\RoomUsers $roomUsersMapper)
     {
+        $this->user = $user;
         $this->setUserProfileMapper($userProfile);
         $this->setRoomMapper($room);
         $this->setRoomUsersMapper($roomUsersMapper);
@@ -24,13 +28,9 @@ class UserRoomStatsController extends AbstractActionController
 
     public function userRoomStatsAction()
     {
-        // $userProfile = [];
-        // if (! is_null($this->userProfile)){
-        //     return new HalJsonModel(['uuid' => $this->userProfile->getUuid()]);
-        // } else {
-        //     return new ApiProblemResponse(new ApiProblem(404, "User Identity not found"));
-        // }
-
+        $user = [];
+    if (! is_null($this->user)){
+            // return new HalJsonModel(['uuid' => $this->user->getUuid()]);
         // $userProfile = $this->userProfile;
 
         // if(is_null($userProfile)){
@@ -47,26 +47,86 @@ class UserRoomStatsController extends AbstractActionController
  
         $queryParamsR = [
             // "uuid" => "f47a88ed-ccbf-11eb-b51a-0242ac110002"
-            "capacity" => "10"
+            // "capacity" => "10"
         ];               
         $roomCollection = $this->getRoomMapper()->fetchAll($queryParamsR);
-        $result = $roomCollection->getResult();
-        $totalRoom = count($result);
+        $result1 = $roomCollection->getResult();
+        $totalRoom = count($result1);
+
+        foreach($result1 as $room){
+            
+        }
 
         $queryParamsRU = [
-            // "room_uuid" => "f47a88ed-ccbf-11eb-b51a-0242ac110002"
+            // "userProfileUuid" => $this->user->getUuid()
+            // "uuid" => "1749265f-ce46-11eb-8c8d-0242ac110002"
+            // BETULIN DULU DI FETCH ALAM DI ROOMUSERS RESOURCE ATAU MAPPER
         ];        
         $roomUsersCollection = $this->getRoomUsersMapper()->fetchAll($queryParamsRU);
-        $result = $roomUsersCollection->getResult();
-        $totalRoomUsers = count($result);
+        $result2 = $roomUsersCollection->getResult();
+        $totalRoomUsers = count($result2);
+
+        $reservation = 0;
+        $listYourReservation = [];
+        // $totalPerRoom[0] = 0;
+        foreach($result2 as $roomUser){
+            if ($roomUser->getUserProfile()->getUuid() == $this->user->getUuid()){
+                $reservation += 1;
+                array_push($listYourReservation, $roomUser->getRoom()->getName());
+            } 
+        }
+
+        foreach($result1 as $room){
+            $perRoom[$room->getName()] = 0;
+            $perRoom2[$room->getName()] = [];
+            foreach($result2 as $roomUser) {
+                if($room->getUuid() == $roomUser->getRoom()->getUuid()){
+                    $perRoom[$room->getName()] += 1;
+                    $name = $roomUser->getUserProfile()->getFirstName() . " " . $roomUser->getUserProfile()->getLastName();
+                    array_push($perRoom2[$room->getName()], $name);
+                }
+            }
+        }
+
+        // foreach($result1 as $room){
+        //     $perRoom[$room->getName()] = 0;
+        //     foreach($result2 as $roomUser) {
+        //         if($room->getUuid() == $roomUser->getRoom()->getUuid()){
+        //             $perRoom[$room->getName()] += 1;
+        //         }
+        //     }
+        // }
+
+        // foreach($result1 as $room){
+        //     $perRoom2[$room->getName()] = [];
+        //     foreach($result2 as $roomUser) {
+        //         if($room->getUuid() == $roomUser->getRoom()->getUuid()){
+        //             // $perRoom[$room->getName()] += 1;
+        //             $name = $roomUser->getUserProfile()->getFirstName() . " " . $roomUser->getUserProfile()->getLastName();
+        //             array_push($perRoom2[$room->getName()], $name);
+        //         }
+        //     }
+        // }
     
         $response = [
-            "totalUserProfile" => $totalUser,
+            "currentUser" => [
+                "name"  => $this->user->getFirstName() . " " . $this->user->getLastName(),
+                "totalYourReservation" => $reservation,
+                "listYourReservation" => $listYourReservation
+            ],
+            "totalUser" => $totalUser,
             "totalRoom" => $totalRoom,
-            "totalRoomUsers" => $totalRoomUsers
+            "totalReservation" => $totalRoomUsers,
+            "totalReservationPerRoom" => $perRoom,            
+            "userPerRoom" => $perRoom2
         ];
 
         return new HalJsonModel($response); 
+
+    } else {
+        return new ApiProblemResponse(new ApiProblem(404, "User Identity not found"));
+    }
+
     }
 
     /**
