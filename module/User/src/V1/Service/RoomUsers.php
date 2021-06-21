@@ -97,6 +97,8 @@ class RoomUsers
     {
         $roomUsersEvent = new RoomUsersEvent();
         $roomUsersEvent->setInputFilter($newData);
+        // var_dump($newData);
+        var_dump($newData->getValues());exit();
         $roomUsersEvent->setUpdateData($newData->getValues());
         $roomUsersEvent->setRoomUsersEntity($roomUsers);
         $roomUsersEvent->setName(RoomUsersEvent::EVENT_UPDATE_ROOMUSERS);

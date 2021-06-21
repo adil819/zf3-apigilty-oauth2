@@ -53,10 +53,10 @@ class Module implements
         $makeReservationService  = $serviceManager->get('user.make-reservation');
         $makeReservationEventListener = $serviceManager->get('user.make-reservation.listener');
         $makeReservationEventListener->attach($makeReservationService->getEventManager());
-        // // makeReservation
-        // $makeReservationEventListener = $serviceManager->get(\User\V1\Service\Listener\MakeReservationEventListener::class);
-        // $makeReservationService  = $serviceManager->get(\User\V1\Service\MakeReservation::class);
-        // $makeReservationEventListener->attach($makeReservationService->getEventManager());
+        // activateRoom
+        $activateRoomService  = $serviceManager->get('user.activate-room');
+        $activateRoomEventListener = $serviceManager->get('user.activate-room.listener');
+        $activateRoomEventListener->attach($activateRoomService->getEventManager());
 
         // Vehicle Users event listener
         $vehicleUsersEventListener = $serviceManager->get(\User\V1\Service\Listener\VehicleUsersEventListener::class);
