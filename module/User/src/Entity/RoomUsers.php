@@ -99,7 +99,8 @@ class RoomUsers implements EntityInterface
      *
      * @return  self
      */
-    public function setRoom(\User\Entity\Room $room)
+    // public function setRoom(\User\Entity\Room $room)
+    public function setRoom($room)
     {
         $this->room = $room;
 
@@ -123,7 +124,8 @@ class RoomUsers implements EntityInterface
      *
      * @return  self
      */
-    public function setUserProfile(\User\Entity\UserProfile $userProfile)
+    // public function setUserProfile(\User\Entity\UserProfile $userProfile)
+    public function setUserProfile($userProfile)
     {
         $this->userProfile = $userProfile;
 

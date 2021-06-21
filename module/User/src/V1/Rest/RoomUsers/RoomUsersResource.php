@@ -130,7 +130,7 @@ class RoomUsersResource extends AbstractResourceListener
         // return new ApiProblem(405, 'The GET method has not been defined for collections');
         $urlParams = $params->toArray();
         $queryParams = [
-            "uuid" => "1749265f-ce46-11eb-8c8d-0242ac110002"
+            // "uuid" => "1749265f-ce46-11eb-8c8d-0242ac110002"
             // // "roomUuid" => "f47a88ed-ccbf-11eb-b51a-0242ac110002"
             // // "room" => [
             // //     "name" => "VIP Room",

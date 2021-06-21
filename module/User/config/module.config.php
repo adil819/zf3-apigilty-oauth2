@@ -3,6 +3,7 @@ return [
     'controllers' => [
         'factories' => [
             'User\\V1\\Rpc\\Signup\\Controller' => \User\V1\Rpc\Signup\SignupControllerFactory::class,
+            'User\\V1\\Rpc\\MakeReservation\\Controller' => \User\V1\Rpc\MakeReservation\MakeReservationControllerFactory::class,
             'User\\V1\\Rpc\\Me\\Controller' => \User\V1\Rpc\Me\MeControllerFactory::class,
             'User\\V1\\Rpc\\UserActivation\\Controller' => \User\V1\Rpc\UserActivation\UserActivationControllerFactory::class,
             \User\V1\Console\Controller\EmailController::class => \User\V1\Console\Controller\EmailControllerFactory::class,
@@ -10,6 +11,7 @@ return [
             'User\\V1\\Rpc\\ResetPasswordNewPassword\\Controller' => \User\V1\Rpc\ResetPasswordNewPassword\ResetPasswordNewPasswordControllerFactory::class,
             'User\\V1\\Rpc\\UserRoomStats\\Controller' => \User\V1\Rpc\UserRoomStats\UserRoomStatsControllerFactory::class,
             'User\\V1\\Rpc\\UserVehicleStats\\Controller' => \User\V1\Rpc\UserVehicleStats\UserVehicleStatsControllerFactory::class,
+            'User\\V1\\Rpc\\ActivateRoom\\Controller' => \User\V1\Rpc\ActivateRoom\ActivateRoomControllerFactory::class,
         ],
     ],
     'service_manager' => [
@@ -17,10 +19,12 @@ return [
             'user.resetpassword' => \User\V1\Service\ResetPasswordFactory::class,
             'user.activation' => \User\V1\Service\UserActivationFactory::class,
             'user.signup' => \User\V1\Service\SignupFactory::class,
+            'user.make-reservation' => \User\V1\Service\MakeReservationFactory::class,
             'user.profile' => \User\V1\Service\ProfileFactory::class,
             'user.activation.listener' => \User\V1\Service\Listener\UserActivationEventListenerFactory::class,
             'user.resetpassword.listener' => \User\V1\Service\Listener\ResetPasswordEventListenerFactory::class,
             'user.signup.listener' => \User\V1\Service\Listener\SignupEventListenerFactory::class,
+            'user.make-reservation.listener' => \User\V1\Service\Listener\MakeReservationEventListenerFactory::class,
             'user.profile.listener' => \User\V1\Service\Listener\ProfileEventListenerFactory::class,
             'user.notification.email.signup.listener' => \User\V1\Notification\Email\Listener\SignupEventListenerFactory::class,
             'user.notification.email.activation.listener' => \User\V1\Notification\Email\Listener\ActivationEventListenerFactory::class,
@@ -181,6 +185,26 @@ return [
                     ],
                 ],
             ],
+            'user.rpc.make-reservation' => [
+                'type' => 'Segment',
+                'options' => [
+                    'route' => '/api/make-reservation',
+                    'defaults' => [
+                        'controller' => 'User\\V1\\Rpc\\MakeReservation\\Controller',
+                        'action' => 'makeReservation',
+                    ],
+                ],
+            ],
+            'user.rpc.activate-room' => [
+                'type' => 'Segment',
+                'options' => [
+                    'route' => '/api/activate-room',
+                    'defaults' => [
+                        'controller' => 'User\\V1\\Rpc\\ActivateRoom\\Controller',
+                        'action' => 'activateRoom',
+                    ],
+                ],
+            ],
         ],
     ],
     'zf-versioning' => [
@@ -199,6 +223,8 @@ return [
             11 => 'user.rpc.user-room-stats',
             12 => 'user.rpc.user-room-stats',
             13 => 'user.rpc.user-vehicle-stats',
+            14 => 'user.rpc.make-reservation',
+            15 => 'user.rpc.activate-room',
         ],
     ],
     'zf-rpc' => [
@@ -258,6 +284,20 @@ return [
             ],
             'route_name' => 'user.rpc.user-vehicle-stats',
         ],
+        'User\\V1\\Rpc\\MakeReservation\\Controller' => [
+            'service_name' => 'MakeReservation',
+            'http_methods' => [
+                0 => 'POST',
+            ],
+            'route_name' => 'user.rpc.make-reservation',
+        ],
+        'User\\V1\\Rpc\\ActivateRoom\\Controller' => [
+            'service_name' => 'ActivateRoom',
+            'http_methods' => [
+                0 => 'POST',
+            ],
+            'route_name' => 'user.rpc.activate-room',
+        ],
     ],
     'zf-content-negotiation' => [
         'controllers' => [
@@ -274,6 +314,8 @@ return [
             '' => 'Json',
             'User\\V1\\Rpc\\UserRoomStats\\Controller' => 'Json',
             'User\\V1\\Rpc\\UserVehicleStats\\Controller' => 'Json',
+            'User\\V1\\Rpc\\MakeReservation\\Controller' => 'Json',
+            'User\\V1\\Rpc\\ActivateRoom\\Controller' => 'Json',
         ],
         'accept_whitelist' => [
             'User\\V1\\Rpc\\Signup\\Controller' => [
@@ -337,6 +379,16 @@ return [
                 1 => 'application/json',
                 2 => 'application/*+json',
             ],
+            'User\\V1\\Rpc\\MakeReservation\\Controller' => [
+                0 => 'application/vnd.user.v1+json',
+                1 => 'application/json',
+                2 => 'application/*+json',
+            ],
+            'User\\V1\\Rpc\\ActivateRoom\\Controller' => [
+                0 => 'application/vnd.user.v1+json',
+                1 => 'application/json',
+                2 => 'application/*+json',
+            ],
         ],
         'content_type_whitelist' => [
             'User\\V1\\Rpc\\Signup\\Controller' => [
@@ -393,11 +445,22 @@ return [
                 0 => 'application/vnd.user.v1+json',
                 1 => 'application/json',
             ],
+            'User\\V1\\Rpc\\MakeReservation\\Controller' => [
+                0 => 'application/vnd.user.v1+json',
+                1 => 'application/json',
+            ],
+            'User\\V1\\Rpc\\ActivateRoom\\Controller' => [
+                0 => 'application/vnd.user.v1+json',
+                1 => 'application/json',
+            ],
         ],
     ],
     'zf-content-validation' => [
         'User\\V1\\Rpc\\Signup\\Controller' => [
             'input_filter' => 'User\\V1\\Rpc\\Signup\\Validator',
+        ],
+        'User\\V1\\Rpc\\MakeReservation\\Controller' => [
+            'input_filter' => 'User\\V1\\Rpc\\MakeReservation\\Validator',
         ],
         'User\\V1\\Rest\\Profile\\Controller' => [
             'input_filter' => 'User\\V1\\Rest\\Profile\\Validator',
@@ -422,6 +485,9 @@ return [
         ],
         'User\\V1\\Rest\\VehicleUsers\\Controller' => [
             'input_filter' => 'User\\V1\\Rest\\VehicleUsers\\Validator',
+        ],
+        'User\\V1\\Rpc\\ActivateRoom\\Controller' => [
+            'input_filter' => 'User\\V1\\Rpc\\ActivateRoom\\Validator',
         ],
     ],
     'input_filter_specs' => [
@@ -666,6 +732,39 @@ return [
                 'error_message' => 'Activation UUID required',
             ],
         ],
+        'User\\V1\\Rpc\\MakeReservation\\Validator' => [
+            0 => [
+                'required' => true,
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\Uuid::class,
+                        'options' => [],
+                    ],
+                ],
+                'filters' => [],
+                'name' => 'userProfile',
+                'field_type' => 'String',
+            ],
+            1 => [
+                'required' => true,
+                'validators' => [],
+                'filters' => [],
+                'name' => 'reservationTime',
+                'field_type' => '',
+            ],
+            2 => [
+                'required' => true,
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\Uuid::class,
+                        'options' => [],
+                    ],
+                ],
+                'filters' => [],
+                'name' => 'room',
+                'field_type' => 'String',
+            ],
+        ],
         'User\\V1\\Rpc\\ResetPasswordConfirmEmail\\Validator' => [
             0 => [
                 'required' => true,
@@ -879,6 +978,14 @@ return [
                 'name' => 'bookingDay',
             ],
         ],
+        'User\\V1\\Rpc\\ActivateRoom\\Validator' => [
+            0 => [
+                'required' => true,
+                'validators' => [],
+                'filters' => [],
+                'name' => 'isActive',
+            ],
+        ],
     ],
     'zf-rest' => [
         'User\\V1\\Rest\\Profile\\Controller' => [
@@ -975,6 +1082,7 @@ return [
             ],
             'collection_query_whitelist' => [
                 0 => 'roomUuid',
+                1 => 'name',
             ],
             'page_size' => 25,
             'page_size_param' => 'limit',
@@ -1231,7 +1339,29 @@ return [
                 'actions' => [
                     'UserVehicleStats' => [
                         'GET' => true,
-                        'POST' => false,
+                        'POST' => true,
+                        'PUT' => false,
+                        'PATCH' => false,
+                        'DELETE' => false,
+                    ],
+                ],
+            ],
+            'User\\V1\\Rpc\\MakeReservation\\Controller' => [
+                'actions' => [
+                    'MakeReservation' => [
+                        'GET' => false,
+                        'POST' => true,
+                        'PUT' => false,
+                        'PATCH' => false,
+                        'DELETE' => false,
+                    ],
+                ],
+            ],
+            'User\\V1\\Rpc\\ActivateRoom\\Controller' => [
+                'actions' => [
+                    'ActivateRoom' => [
+                        'GET' => false,
+                        'POST' => true,
                         'PUT' => false,
                         'PATCH' => false,
                         'DELETE' => false,
