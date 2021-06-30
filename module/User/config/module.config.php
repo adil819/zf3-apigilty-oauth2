@@ -51,6 +51,9 @@ return [
             \User\V1\Rest\VehicleUsers\VehicleUsersResource::class => \User\V1\Rest\VehicleUsers\VehicleUsersResourceFactory::class,
             \User\V1\Service\VehicleUsers::class => \User\V1\Service\VehicleUsersFactory::class,
             \User\V1\Service\Listener\VehicleUsersEventListener::class => \User\V1\Service\Listener\VehicleUsersEventListenerFactory::class,
+            \User\V1\Rest\Item\ItemResource::class => \User\V1\Rest\Item\ItemResourceFactory::class,
+            \User\V1\Service\Item::class => \User\V1\Service\ItemFactory::class,
+            \User\V1\Service\Listener\ItemEventListener::class => \User\V1\Service\Listener\ItemEventListenerFactory::class,
         ],
         'abstract_factories' => [
             0 => \User\Mapper\AbstractMapperFactory::class,
@@ -58,6 +61,7 @@ return [
     ],
     'hydrators' => [
         'factories' => [
+            'User\\Hydrator\\Item' => \User\V1\Hydrator\ItemHydratorFactory::class,
             'User\\Hydrator\\UserProfile' => \User\V1\Hydrator\UserProfileHydratorFactory::class,
             'User\\Hydrator\\Room' => \User\V1\Hydrator\RoomHydratorFactory::class,
             'User\\Hydrator\\RoomUsers' => \User\V1\Hydrator\RoomUsersHydratorFactory::class,
@@ -207,6 +211,15 @@ return [
                     ],
                 ],
             ],
+            'user.rest.item' => [
+                'type' => 'Segment',
+                'options' => [
+                    'route' => '/api/item[/:uuid]',
+                    'defaults' => [
+                        'controller' => 'User\\V1\\Rest\\Item\\Controller',
+                    ],
+                ],
+            ],
         ],
     ],
     'zf-versioning' => [
@@ -227,6 +240,7 @@ return [
             13 => 'user.rpc.user-vehicle-stats',
             14 => 'user.rpc.make-reservation',
             15 => 'user.rpc.activate-room',
+            16 => 'user.rest.item',
         ],
     ],
     'zf-rpc' => [
@@ -318,6 +332,7 @@ return [
             'User\\V1\\Rpc\\UserVehicleStats\\Controller' => 'Json',
             'User\\V1\\Rpc\\MakeReservation\\Controller' => 'Json',
             'User\\V1\\Rpc\\ActivateRoom\\Controller' => 'Json',
+            'User\\V1\\Rest\\Item\\Controller' => 'HalJson',
         ],
         'accept_whitelist' => [
             'User\\V1\\Rpc\\Signup\\Controller' => [
@@ -391,6 +406,11 @@ return [
                 1 => 'application/json',
                 2 => 'application/*+json',
             ],
+            'User\\V1\\Rest\\Item\\Controller' => [
+                0 => 'application/vnd.user.v1+json',
+                1 => 'application/hal+json',
+                2 => 'application/json',
+            ],
         ],
         'content_type_whitelist' => [
             'User\\V1\\Rpc\\Signup\\Controller' => [
@@ -455,6 +475,10 @@ return [
                 0 => 'application/vnd.user.v1+json',
                 1 => 'application/json',
             ],
+            'User\\V1\\Rest\\Item\\Controller' => [
+                0 => 'application/vnd.user.v1+json',
+                1 => 'application/json',
+            ],
         ],
     ],
     'zf-content-validation' => [
@@ -490,6 +514,9 @@ return [
         ],
         'User\\V1\\Rpc\\ActivateRoom\\Controller' => [
             'input_filter' => 'User\\V1\\Rpc\\ActivateRoom\\Validator',
+        ],
+        'User\\V1\\Rest\\Item\\Controller' => [
+            'input_filter' => 'User\\V1\\Rest\\Item\\Validator',
         ],
     ],
     'input_filter_specs' => [
@@ -1000,6 +1027,32 @@ return [
                 'field_type' => 'String',
             ],
         ],
+        'User\\V1\\Rest\\Item\\Validator' => [
+            0 => [
+                'required' => true,
+                'validators' => [],
+                'filters' => [],
+                'name' => 'name',
+            ],
+            1 => [
+                'required' => true,
+                'validators' => [],
+                'filters' => [],
+                'name' => 'price',
+            ],
+            2 => [
+                'required' => true,
+                'validators' => [],
+                'filters' => [],
+                'name' => 'qty',
+            ],
+            3 => [
+                'required' => true,
+                'validators' => [],
+                'filters' => [],
+                'name' => 'boughtAt',
+            ],
+        ],
     ],
     'zf-rest' => [
         'User\\V1\\Rest\\Profile\\Controller' => [
@@ -1126,6 +1179,31 @@ return [
             'collection_class' => \User\V1\Rest\VehicleUsers\VehicleUsersCollection::class,
             'service_name' => 'VehicleUsers',
         ],
+        'User\\V1\\Rest\\Item\\Controller' => [
+            'listener' => \User\V1\Rest\Item\ItemResource::class,
+            'route_name' => 'user.rest.item',
+            'route_identifier_name' => 'uuid',
+            'collection_name' => 'item',
+            'entity_http_methods' => [
+                0 => 'GET',
+                1 => 'PATCH',
+                2 => 'PUT',
+                3 => 'DELETE',
+            ],
+            'collection_http_methods' => [
+                0 => 'GET',
+                1 => 'POST',
+            ],
+            'collection_query_whitelist' => [
+                0 => 'name',
+                1 => 'price',
+            ],
+            'page_size' => 25,
+            'page_size_param' => null,
+            'entity_class' => \User\Entity\Item::class,
+            'collection_class' => 'User\\V1\\Rest\\Item\\ItemCollection',
+            'service_name' => 'Item',
+        ],
     ],
     'zf-hal' => [
         'metadata_map' => [
@@ -1242,6 +1320,24 @@ return [
                 'route_name' => 'user.rest.vehicle-users',
                 'route_identifier_name' => 'uuid',
                 'hydrator' => 'User\\Hydrator\\VehicleUsers',
+            ],
+            \User\V1\Rest\Item\ItemEntity::class => [
+                'entity_identifier_name' => 'uuid',
+                'route_name' => 'user.rest.item',
+                'route_identifier_name' => 'uuid',
+                'hydrator' => 'User\\Hydrator\\Room',
+            ],
+            'User\\V1\\Rest\\Item\\ItemCollection' => [
+                'entity_identifier_name' => 'uuid',
+                'route_name' => 'user.rest.item',
+                'route_identifier_name' => 'uuid',
+                'is_collection' => true,
+            ],
+            \User\Entity\Item::class => [
+                'entity_identifier_name' => 'uuid',
+                'route_name' => 'user.rest.item',
+                'route_identifier_name' => 'uuid',
+                'hydrator' => 'User\\Hydrator\\Item',
             ],
         ],
     ],
@@ -1380,6 +1476,22 @@ return [
                         'PATCH' => false,
                         'DELETE' => false,
                     ],
+                ],
+            ],
+            'User\\V1\\Rest\\Item\\Controller' => [
+                'collection' => [
+                    'GET' => true,
+                    'POST' => true,
+                    'PUT' => false,
+                    'PATCH' => false,
+                    'DELETE' => false,
+                ],
+                'entity' => [
+                    'GET' => true,
+                    'POST' => false,
+                    'PUT' => false,
+                    'PATCH' => true,
+                    'DELETE' => true,
                 ],
             ],
         ],

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
+  <entity name="User\Entity\Item" table="item">
+    <id name="uuid" type="string" column="uuid" length="36">
+      <generator strategy="UUID"/>
+    </id>
+    <field name="name" type="string" column="name" length="60" nullable="true">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="qty" type="integer" column="qty" length="11" nullable="true">
+    </field>
+    <field name="price" type="integer" column="price" length="11" nullable="true">
+    </field>
+    <field name="boughtAt" type="date" column="bought_at"  nullable="true">
+    </field>
+    <field name="createdAt" type="datetime" column="created_at"  nullable="true">
+      <gedmo:timestampable on="create"/>
+    </field>
+    <field name="updatedAt" type="datetime" column="updated_at" nullable="true">
+      <gedmo:timestampable on="update"/>
+    </field>
+    <field name="deletedAt" type="datetime" column="deleted_at" nullable="true" />
+    <gedmo:soft-deleteable field-name="deletedAt" time-aware="false" />
+  </entity>
+</doctrine-mapping>
